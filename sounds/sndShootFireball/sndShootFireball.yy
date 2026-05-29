@@ -1,0 +1,26 @@
+{
+  "$GMSound":"v2",
+  "%Name":"sndShootFireball",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "channelFormat":0,
+  "compression":0,
+  "compressionQuality":4,
+  "conversionMode":0,
+  "duration":0.314252,
+  "exportDir":"",
+  "name":"sndShootFireball",
+  "parent":{
+    "name":"Sounds",
+    "path":"folders/Sounds.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"sndShootFireball.wav",
+  "volume":1.0,
+}

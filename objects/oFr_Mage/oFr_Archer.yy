@@ -1,0 +1,43 @@
+{
+  "spriteId": {
+    "name": "sFr_Archer01",
+    "path": "sprites/sFr_Archer01/sFr_Archer01.yy",
+  },
+  "solid": false,
+  "visible": true,
+  "spriteMaskId": {
+    "name": "sFr_Soldier01",
+    "path": "sprites/sFr_Soldier01/sFr_Soldier01.yy",
+  },
+  "persistent": false,
+  "parentObjectId": {
+    "name": "oPar_PlayerUnit",
+    "path": "objects/oPar_PlayerUnit/oPar_PlayerUnit.yy",
+  },
+  "physicsObject": false,
+  "physicsSensor": false,
+  "physicsShape": 1,
+  "physicsGroup": 1,
+  "physicsDensity": 0.5,
+  "physicsRestitution": 0.1,
+  "physicsLinearDamping": 0.1,
+  "physicsAngularDamping": 0.1,
+  "physicsFriction": 0.2,
+  "physicsStartAwake": true,
+  "physicsKinematic": false,
+  "physicsShapePoints": [],
+  "eventList": [
+    {"isDnD":false,"eventNum":0,"eventType":0,"collisionObjectId":null,"parent":{"name":"oFr_Archer","path":"objects/oFr_Archer/oFr_Archer.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
+    {"isDnD":false,"eventNum":10,"eventType":7,"collisionObjectId":null,"parent":{"name":"oFr_Archer","path":"objects/oFr_Archer/oFr_Archer.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMEvent",},
+  ],
+  "properties": [],
+  "overriddenProperties": [],
+  "parent": {
+    "name": "Player Units",
+    "path": "folders/Objects/Player Units.yy",
+  },
+  "resourceVersion": "1.0",
+  "name": "oFr_Archer",
+  "tags": [],
+  "resourceType": "GMObject",
+}
