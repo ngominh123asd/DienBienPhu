@@ -74,6 +74,34 @@ with (oPar_Enemy) {
 	draw_circle(ex, ey, 2.5, false);
 }
 
+// 4.5. Draw Special Markers
+// Base (obj_cancu)
+with (obj_cancu) {
+	var bx = map_x + (x / room_width) * minimap_w;
+	var by = map_y + (y / room_height) * minimap_h;
+	
+	draw_set_color(c_aqua);
+	draw_rectangle(bx - 3, by - 3, bx + 3, by + 3, false);
+}
+
+// Bunker (oPar_locot)
+with (oPar_locot) {
+	var lx = map_x + (x / room_width) * minimap_w;
+	var ly = map_y + (y / room_height) * minimap_h;
+	
+	draw_set_color(c_orange);
+	draw_rectangle(lx - 2, ly - 2, lx + 2, ly + 2, false);
+}
+
+// Boss (oEn_Dragon)
+with (oEn_Dragon) {
+	var dx = map_x + (x / room_width) * minimap_w;
+	var dy = map_y + (y / room_height) * minimap_h;
+	
+	draw_set_color(c_fuchsia);
+	draw_circle(dx, dy, 4, false);
+}
+
 // 5. Draw Viewport Camera Box (White transparent rect showing where the camera is looking)
 if (instance_exists(oCamera)) {
 	var cam_w = camera_get_view_width(oCamera.Camera);
