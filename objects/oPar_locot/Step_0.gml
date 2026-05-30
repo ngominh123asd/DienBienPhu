@@ -1,4 +1,23 @@
-/// @description Control
+/// @description Step Control
+
+// Time-based HP Upgrades
+if (instance_exists(oCont_Room)) {
+    var playtime = oCont_Room.TimePlayed;
+    
+    // Upgrade to 100 HP at 2 minutes (7200 frames)
+    if (playtime >= 7200 && !UpgradedTo100) {
+        UpgradedTo100 = true;
+        MaxHp = 100;
+        CurHp += 50;
+    }
+    
+    // Upgrade to 150 HP at 4 minutes (14400 frames)
+    if (playtime >= 14400 && !UpgradedTo150) {
+        UpgradedTo150 = true;
+        MaxHp = 150;
+        CurHp += 50;
+    }
+}
 
 #region Die
 

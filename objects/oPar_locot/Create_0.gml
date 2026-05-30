@@ -4,6 +4,9 @@
 MaxHp = 50;
 CurHp = 50;
 
+UpgradedTo100 = false;
+UpgradedTo150 = false;
+
 // Combat
 Power = 2;
 CanAttack = 1;
