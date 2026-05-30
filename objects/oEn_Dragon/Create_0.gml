@@ -5,7 +5,7 @@ event_inherited();
 
 MaxHp = 500;
 CurHp = 500;
-Power = 2;
+Power = 6;
 
 // Scale B52
 UnitScale = 0.22;

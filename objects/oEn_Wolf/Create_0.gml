@@ -5,7 +5,7 @@ event_inherited();
 
 MaxHp = 4;
 CurHp = 4; //Hp
-Power = 2; //Att pow
+Power = 4; //Att pow
 
 //Unique
 AttackDist = 4; //Distance to attack from
