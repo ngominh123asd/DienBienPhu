@@ -1,4 +1,5 @@
 /// @description Draw HP to GUI
+if (CurHp <= 0) exit;
 if (!instance_exists(oCamera)) exit;
 
 var ShowHp = position_meeting(mouse_x, mouse_y, self);

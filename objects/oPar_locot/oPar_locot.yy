@@ -18,7 +18,10 @@
     "name":"Parents and sensors",
     "path":"folders/Objects/Parents and sensors.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"oPar_Collidable",
+    "path":"objects/oPar_Collidable/oPar_Collidable.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

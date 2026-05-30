@@ -1,13 +1,14 @@
 /// @description Init
 
 // HP
-MaxHp = 20;
-CurHp = 20;
+MaxHp = 50;
+CurHp = 50;
 
 // Combat
 Power = 2;
 CanAttack = 1;
 NearestEnemy = noone;
+Aggroed = false; // Chỉ tấn công khi bị tấn công trước
 
 // Timers
 AttackDelay = room_speed * 2;    // Bắn mỗi 2 giây

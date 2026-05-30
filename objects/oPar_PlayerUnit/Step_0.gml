@@ -42,20 +42,6 @@ if Selected {
 
 #region Fight
 
-// === Auto-aggro: chỉ tự đuổi theo enemy thường ===
-if instance_exists(oPar_Enemy) {
-	
-	NearestEnemy = instance_nearest(x, y, oPar_Enemy);
-	
-	// Only auto-aggro (chase) if not currently ordered to move by the user
-	if distance_to_point(DestX, DestY) <= 5 {
-		if distance_to_object(NearestEnemy) < 24 {
-			DestX = NearestEnemy.x;
-			DestY = NearestEnemy.y;
-		}
-	}
-}
-
 // === Tấn công: nhắm cả enemy + locot (chọn gần nhất) ===
 var _hasEnemy = instance_exists(oPar_Enemy);
 var _hasLocot = instance_exists(oPar_locot);
@@ -72,8 +58,21 @@ if (_hasEnemy || _hasLocot) {
 		_distEnemy = distance_to_object(_nearEnemy);
 	}
 	if (_hasLocot) {
-		_nearLocot = instance_nearest(x, y, oPar_locot);
-		_distLocot = distance_to_object(_nearLocot);
+		var shortest_dist = 99999;
+		for (var i = 0; i < instance_number(oPar_locot); i++) {
+			var loc = instance_find(oPar_locot, i);
+			if (loc.CurHp > 0) {
+				var d = distance_to_object(loc);
+				if (d < shortest_dist) {
+					shortest_dist = d;
+					_nearLocot = loc;
+				}
+			}
+		}
+		
+		if (_nearLocot != noone) {
+			_distLocot = shortest_dist;
+		}
 	}
 	
 	// Chọn target gần hơn để đánh
