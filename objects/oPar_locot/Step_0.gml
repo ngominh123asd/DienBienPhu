@@ -38,12 +38,9 @@ if CurHp <= 0 {
 			instance_create_layer(base_x + irandom_range(-15,15), base_y + irandom_range(-15,15), "Instances", oExp);	
 		}
 
-		// 50% chance to drop 1-3 HP items
-		if (irandom(1) == 0) {
-			var hp_amount = irandom_range(1, 3);
-			for (var a = 0; a < hp_amount; a++) {
-				instance_create_layer(base_x + irandom_range(-15,15), base_y + irandom_range(-15,15), "Instances", oHp);
-			}
+		// 20% chance to drop 1 HP item
+		if (irandom(99) < 20) {
+			instance_create_layer(base_x + irandom_range(-15,15), base_y + irandom_range(-15,15), "Instances", oHp);
 		}
 		
 		// Stop alarms
