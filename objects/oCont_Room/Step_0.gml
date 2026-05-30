@@ -13,9 +13,9 @@ var scale = min(map_max_w / room_width, map_max_h / room_height);
 var minimap_w = room_width * scale;
 var minimap_h = room_height * scale;
 
-var padding = 20;
-var map_x = gui_w - minimap_w - padding;
-var map_y = gui_h - minimap_h - padding;
+var padding = 10;
+var map_x = padding;
+var map_y = padding;
 
 var mx = device_mouse_x_to_gui(0);
 var my = device_mouse_y_to_gui(0);
@@ -34,6 +34,10 @@ if (mouse_over_minimap) {
 		}
 	}
 } else {
+	// Cooldown ngắn sau khi rời minimap để tránh click nhầm
+	if (alarm[0] <= 0 && CanClick == 0) {
+		alarm[0] = 10; // 10 frame delay
+	}
 	if (alarm[0] <= 0) {
 		CanClick = 1;
 	}

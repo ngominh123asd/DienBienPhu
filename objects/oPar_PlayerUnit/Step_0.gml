@@ -42,9 +42,9 @@ if Selected {
 
 #region Fight
 
+// === Auto-aggro: chỉ tự đuổi theo enemy thường ===
 if instance_exists(oPar_Enemy) {
 	
-	//Get nearest enemy
 	NearestEnemy = instance_nearest(x, y, oPar_Enemy);
 	
 	// Only auto-aggro (chase) if not currently ordered to move by the user
@@ -54,11 +54,39 @@ if instance_exists(oPar_Enemy) {
 			DestY = NearestEnemy.y;
 		}
 	}
+}
+
+// === Tấn công: nhắm cả enemy + locot (chọn gần nhất) ===
+var _hasEnemy = instance_exists(oPar_Enemy);
+var _hasLocot = instance_exists(oPar_locot);
+
+if (_hasEnemy || _hasLocot) {
 	
-	//Attack when in range
+	var _nearEnemy = noone;
+	var _nearLocot = noone;
+	var _distEnemy = 99999;
+	var _distLocot = 99999;
+	
+	if (_hasEnemy) {
+		_nearEnemy = instance_nearest(x, y, oPar_Enemy);
+		_distEnemy = distance_to_object(_nearEnemy);
+	}
+	if (_hasLocot) {
+		_nearLocot = instance_nearest(x, y, oPar_locot);
+		_distLocot = distance_to_object(_nearLocot);
+	}
+	
+	// Chọn target gần hơn để đánh
+	if (_distEnemy <= _distLocot) {
+		NearestEnemy = _nearEnemy;
+	}
+	else {
+		NearestEnemy = _nearLocot;
+	}
+	
+	// Attack when in range
 	if distance_to_object(NearestEnemy) < AttackDist {
 		
-		//Attack if can
 		if CanAttack {
 			event_user(0);
 		}

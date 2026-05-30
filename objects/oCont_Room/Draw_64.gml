@@ -9,7 +9,7 @@ with(oPar_PlayerUnit){
 	if Selected{
 		
 		draw_set_color(c_white)
-		draw_text(5,50 + (a * 20), string(Name) + " Lv" + string(Level) + "- HP " + string(CurHp) + "/" + string(MaxHp))
+		draw_text(5, 190 + (a * 20), string(Name) + " Lv" + string(Level) + "- HP " + string(CurHp) + "/" + string(MaxHp))
 		a ++;
 	}
 }
@@ -28,7 +28,7 @@ draw_set_halign(fa_right);
 draw_set_color(c_yellow);
 draw_text(1275,10,"Press 'BACKSPACE' to Quit");
 draw_set_halign(fa_left);
-draw_text(5,680,"Time: " + string(PlayedString));
+draw_text(5,700,"Time: " + string(PlayedString));
 
 #region Draw Minimap
 
@@ -39,9 +39,9 @@ var scale = min(map_max_w / room_width, map_max_h / room_height);
 var minimap_w = room_width * scale;
 var minimap_h = room_height * scale;
 
-var padding = 20;
-var map_x = 1280 - minimap_w - padding;
-var map_y = 720 - minimap_h - padding;
+var padding = 10;
+var map_x = padding;
+var map_y = padding;
 
 // 1. Draw Background (Dark transparent glass)
 draw_set_color(c_black);
