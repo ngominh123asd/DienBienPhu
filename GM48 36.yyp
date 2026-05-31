@@ -50,6 +50,7 @@
   },
   "name":"GM48 36",
   "resources":[
+    {"id":{"name":"obj_phan_van_giot","path":"objects/obj_phan_van_giot/obj_phan_van_giot.yy",},},
     {"id":{"name":"fnt_vietnamese","path":"fonts/fnt_vietnamese/fnt_vietnamese.yy",},},
     {"id":{"name":"oAtt_DragonFire","path":"objects/oAtt_DragonFire/oAtt_DragonFire.yy",},},
     {"id":{"name":"oAtt_EnemyMelee","path":"objects/oAtt_EnemyMelee/oAtt_EnemyMelee.yy",},},

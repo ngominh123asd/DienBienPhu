@@ -4,15 +4,14 @@
 CanAttack = 0;
 
 // 1. Logic Phan Văn Giót
-if (CurHp <= 160 && !PhanVanGiotTriggered && CurHp > 0) {
+if (CurHp <= 180 && !PhanVanGiotTriggered && CurHp > 0) {
     PhanVanGiotTriggered = true;
-    DisabledFirepower = true;
     
-    // Tạo text thông báo
-    var fx = instance_create_layer(x + (sprite_width/2), y - 40, "Instances", oFx_ConvertText);
-    fx.Text = "Phan Văn Giót lấp lỗ châu mai!";
-    fx.image_blend = c_red;
-    fx.life_timer = room_speed * 4;
+    // Sinh ra Phan Văn Giót chạy từ dưới lên lấp lỗ châu mai
+    var Giot = instance_create_layer(x + (sprite_width/2), y + sprite_height + 50, "Instances", obj_phan_van_giot);
+    Giot.TargetBoss = id;
+    Giot.DestX = x + (sprite_width/2);
+    Giot.DestY = y + (sprite_height/2);
 }
 
 // Thực thi logic của Parent (xử lý chết, HP)

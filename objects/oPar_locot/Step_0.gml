@@ -23,7 +23,8 @@ if (instance_exists(oCont_Room)) {
 
 if CurHp <= 0 {
 	// Chỉ rơi đồ 1 lần khi mới chết
-	if (image_index != 8) {
+	if (!variable_instance_exists(id, "IsDead")) {
+		IsDead = true;
 		var drop_dir = 270; // Default direction down
 		var player = instance_nearest(x, y, oPar_PlayerUnit);
 		if (player != noone) {
@@ -50,7 +51,7 @@ if CurHp <= 0 {
 		
 		// Set frame phá hủy
 		image_speed = 0;
-		image_index = 8;
+		image_index = image_number - 1;
 	}
 	
 	// Khóa depth và exit không làm gì nữa
