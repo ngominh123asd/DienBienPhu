@@ -45,6 +45,240 @@ if (mouse_over_minimap) {
 #endregion
 
 #region Clicking units
+
+// Decrement shake and cooldowns
+if (bomb_cooldown > 0) bomb_cooldown--;
+if (w_cooldown > 0) w_cooldown--;
+if (e_cooldown > 0) e_cooldown--;
+if (r_cooldown > 0) r_cooldown--;
+if (screen_shake > 0) screen_shake -= 0.5;
+
+// Update Weather Timer & State
+weather_timer++;
+if (weather_timer >= weather_duration) {
+	weather_timer = 0;
+	weather_state = (weather_state + 1) % 3; // Sunny (0) -> Rainy (1) -> Stormy (2)
+	
+	// Create screen-wide flash & thunder clap when transitioning to rain or storm!
+	if (weather_state == 1 || weather_state == 2) {
+		screen_shake = 12;
+		audio_play_sound(sndDragonfireHit, 9, false); // Thunder sound
+	}
+}
+
+// Lightning simulator during Stormy weather (state == 2)
+if (weather_state == 2) {
+	if (!lightning_active && irandom(160) == 0) { // Trigger lightning strike
+		lightning_active = true;
+		lightning_alpha = 0.8;
+		screen_shake = 18; // Heavy ground rumble!
+		audio_play_sound(sndDragonfireHit, 10, false); // Massive thunder strike
+	}
+	
+	if (lightning_active) {
+		// Natural double-strike flicker simulation
+		lightning_alpha -= random_range(0.04, 0.1);
+		if (lightning_alpha <= 0) {
+			lightning_active = false;
+			lightning_alpha = 0;
+		}
+	}
+} else {
+	lightning_active = false;
+	lightning_alpha = 0;
+}
+
+// Update rain particle positions & slow down enemies
+if (weather_state > 0) {
+	// Rain falls 2.2x faster and is much more slanted during severe Storm
+	var speed_mult = (weather_state == 2) ? 2.2 : 1.0;
+	
+	for (var i = 0; i < array_length(rain_drops); i++) {
+		var drop = rain_drops[i];
+		drop.x += drop.spd * 0.8 * speed_mult; // Heavy wind slant
+		drop.y += drop.spd * speed_mult;
+		if (drop.y > 720) {
+			drop.y = -30;
+			drop.x = irandom(1280);
+		}
+		if (drop.x > 1280) {
+			drop.x = -30;
+			drop.y = irandom(720);
+		}
+	}
+	
+	// Apply movement slow debuff to all enemies based on mud/storm severity
+	var slow_mult = (weather_state == 2) ? 0.5 : 0.7; // 50% slow in Storm, 30% in Rain
+	with (oPar_Enemy) {
+		if (!variable_instance_exists(self, "base_spd")) {
+			base_spd = Spd;
+		}
+		Spd = base_spd * slow_mult;
+	}
+} else {
+	// Restore normal speed when sunny
+	with (oPar_Enemy) {
+		if (variable_instance_exists(self, "base_spd")) {
+			Spd = base_spd;
+		}
+	}
+}
+
+// Process Katyusha Rocket Strikes over time (salvo queue)
+for (var i = array_length(katyusha_queue) - 1; i >= 0; i--) {
+	var item = katyusha_queue[i];
+	item.delay--;
+	if (item.delay <= 0) {
+		// Spawn rocket flying chéo chéo down to the target
+		var rx = item.target_x - 120; // starts top-left offset
+		var ry = item.target_y - 250;
+		var rocket = instance_create_layer(rx, ry, "Instances", obj_air_bomb);
+		if (rocket != noone) {
+			rocket.bomb_type = 2; // Katyusha Rocket
+			rocket.target_x = item.target_x;
+			rocket.target_y = item.target_y;
+			rocket.speed = 11;
+			rocket.direction = point_direction(rx, ry, item.target_x, item.target_y);
+			rocket.image_angle = rocket.direction - 90;
+		}
+		array_delete(katyusha_queue, i, 1);
+	}
+}
+
+// Cancel targeting mode with Escape or Right Click (consume right click on cancellation)
+if (keyboard_check_pressed(vk_escape) || mouse_check_button_pressed(mb_right)) {
+	var did_cancel = false;
+	if (targeting_mode > 0) {
+		targeting_mode = 0;
+		targeting_active = false;
+		Dragging = 0;
+		did_cancel = true;
+	}
+	if (did_cancel && mouse_check_button_pressed(mb_right)) {
+		exit; // Consume the right click so units do not move to the click location
+	}
+}
+
+// Toggle Air Strike (Q key)
+if (keyboard_check_pressed(ord("Q"))) {
+	if (bomb_cooldown == 0) {
+		if (targeting_mode == 1) {
+			targeting_mode = 0;
+			targeting_active = false;
+		} else {
+			targeting_mode = 1;
+			targeting_active = true;
+			Dragging = 0;
+		}
+	}
+}
+
+// Toggle AA Flak Barrage (W key)
+if (keyboard_check_pressed(ord("W"))) {
+	if (w_cooldown == 0) {
+		if (targeting_mode == 2) {
+			targeting_mode = 0;
+			targeting_active = false;
+		} else {
+			targeting_mode = 2;
+			targeting_active = true;
+			Dragging = 0;
+		}
+	}
+}
+
+// Toggle Katyusha Rocket Strike (E key)
+if (keyboard_check_pressed(ord("E"))) {
+	if (e_cooldown == 0) {
+		if (targeting_mode == 3) {
+			targeting_mode = 0;
+			targeting_active = false;
+		} else {
+			targeting_mode = 3;
+			targeting_active = true;
+			Dragging = 0;
+		}
+	}
+}
+
+// Toggle Giant A1 TNT Charge (R key)
+if (keyboard_check_pressed(ord("R"))) {
+	if (r_cooldown == 0) {
+		if (targeting_mode == 4) {
+			targeting_mode = 0;
+			targeting_active = false;
+		} else {
+			targeting_mode = 4;
+			targeting_active = true;
+			Dragging = 0;
+		}
+	}
+}
+
+// Handle Custom Clicks in Targeting Modes
+if (mouse_check_button_pressed(mb_left) && CanClick) {
+	if (targeting_mode > 0) {
+		var tx = mouse_x;
+		var ty = mouse_y;
+		
+		if (targeting_mode == 1) {
+			// --- Q: Air Strike Action ---
+			var cam_x = camera_get_view_x(view_camera[0]);
+			var plane_x = cam_x - 120; // Spawn off-screen left
+			var plane_y = ty;
+			
+			var plane = instance_create_layer(plane_x, plane_y, "Instances", obj_strike_plane);
+			if (plane != noone) {
+				plane.target_x = tx;
+				plane.target_y = ty;
+			}
+			
+			// Play alarm/conversion sound
+			audio_play_sound(sndConvert, 10, false);
+			
+			bomb_cooldown = bomb_max_cooldown;
+		}
+		else if (targeting_mode == 2) {
+			// --- W: Lô cốt Chiến hào ---
+			var bunker = instance_create_layer(tx, ty, "Instances", obj_locot_player);
+			if (bunker != noone) {
+				effect_create_above(ef_smoke, tx, ty, 1, c_gray);
+				effect_create_above(ef_ring, tx, ty, 1, c_aqua);
+			}
+			
+			// Play alert sound
+			audio_play_sound(sndConvert, 10, false);
+			w_cooldown = w_max_cooldown;
+		}
+		else if (targeting_mode == 3) {
+			// --- E: Trại Huấn Luyện ---
+			var camp = instance_create_layer(tx, ty, "Instances", obj_training_camp);
+			if (camp != noone) {
+				effect_create_above(ef_smoke, tx, ty, 1, c_gray);
+				effect_create_above(ef_ring, tx, ty, 1, c_green);
+			}
+			
+			audio_play_sound(sndConvert, 10, false);
+			e_cooldown = e_max_cooldown;
+		}
+		else if (targeting_mode == 4) {
+			// --- R: Cao xạ 37mm ---
+			var gun = instance_create_layer(tx, ty, "Instances", obj_anti_air_gun);
+			if (gun != noone) {
+				effect_create_above(ef_smoke, tx, ty, 1, c_gray);
+				effect_create_above(ef_ring, tx, ty, 1, c_orange);
+			}
+			
+			audio_play_sound(sndConvert, 10, false);
+			r_cooldown = r_max_cooldown;
+		}
+		
+		targeting_mode = 0;
+		targeting_active = false;
+		exit; // Stop executing standard click/drag
+	}
+}
+
 //Get initial click
 if mouse_check_button_pressed(mb_left) && CanClick{
 	
@@ -72,8 +306,8 @@ if mouse_check_button_released(mb_left) && Dragging{
 	}
 }
 
-// Right click to move with formations
-if mouse_check_button_pressed(mb_right) && !mouse_over_minimap {
+// Right click to move with formations (safety bypass when targeting is active)
+if mouse_check_button_pressed(mb_right) && !mouse_over_minimap && !targeting_active {
 	var sel_count = 0;
 	var cx = 0;
 	var cy = 0;

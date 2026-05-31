@@ -131,4 +131,317 @@ if (instance_exists(oCamera)) {
 draw_set_alpha(1.0);
 draw_set_color(c_white);
 
+#region Dien Bien Phu Tactical HUD Skills Panel
+var hud_x = 410;
+var hud_y = 635;
+var hud_w = 460;
+var hud_h = 75;
+
+// Draw glassmorphism panel background
+draw_set_color(c_black);
+draw_set_alpha(0.75);
+draw_rectangle(hud_x, hud_y, hud_x + hud_w, hud_y + hud_h, false);
+
+// Draw gold military border
+draw_set_color(make_color_rgb(180, 150, 50));
+draw_set_alpha(0.85);
+draw_rectangle(hud_x - 1, hud_y - 1, hud_x + hud_w + 1, hud_y + hud_h + 1, true);
+
+// Set font and alignment
+draw_set_font(fnt_vietnamese);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+
+// --- 1. [Q] AIR STRIKE BUTTON ---
+var q_x1 = hud_x + 15;
+var q_y1 = hud_y + 10;
+var q_x2 = q_x1 + 95;
+var q_y2 = q_y1 + 55;
+
+// Background base
+if (bomb_cooldown == 0) {
+    if (targeting_mode == 1) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(85, 30, 30)); // Deep tactical red
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(q_x1, q_y1, q_x2, q_y2, false);
+
+if (bomb_cooldown > 0) {
+    var q_pct = bomb_cooldown / bomb_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(q_x1, q_y2 - (q_y2 - q_y1) * q_pct, q_x2, q_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (bomb_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "COOLDOWN\n" + string(ceil(bomb_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 1 ? c_yellow : c_white);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÔNG KÍCH\nPHÍM Q", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 1) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(q_x1 - 1, q_y1 - 1, q_x2 + 1, q_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(q_x1, q_y1, q_x2, q_y2, true);
+}
+
+
+// --- 2. [W] AA FLAK BARRAGE BUTTON ---
+var w_x1 = hud_x + 125;
+var w_y1 = hud_y + 10;
+var w_x2 = w_x1 + 95;
+var w_y2 = w_y1 + 55;
+
+// Background base
+if (w_cooldown == 0) {
+    if (targeting_mode == 2) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(30, 80, 85)); // Steel cyan
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(w_x1, w_y1, w_x2, w_y2, false);
+
+if (w_cooldown > 0) {
+    var w_pct = w_cooldown / w_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(w_x1, w_y2 - (w_y2 - w_y1) * w_pct, w_x2, w_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (w_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "COOLDOWN\n" + string(ceil(w_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 2 ? c_yellow : c_white);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "PHÒNG KHÔNG\nPHÍM W", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 2) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(w_x1 - 1, w_y1 - 1, w_x2 + 1, w_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(w_x1, w_y1, w_x2, w_y2, true);
+}
+
+
+// --- 3. [E] KATYUSHA SALVO BUTTON ---
+var e_x1 = hud_x + 235;
+var e_y1 = hud_y + 10;
+var e_x2 = e_x1 + 95;
+var e_y2 = e_y1 + 55;
+
+// Background base
+if (e_cooldown == 0) {
+    if (targeting_mode == 3) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(30, 85, 40)); // Forest green
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(e_x1, e_y1, e_x2, e_y2, false);
+
+if (e_cooldown > 0) {
+    var e_pct = e_cooldown / e_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(e_x1, e_y2 - (e_y2 - e_y1) * e_pct, e_x2, e_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (e_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "COOLDOWN\n" + string(ceil(e_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 3 ? c_yellow : c_white);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "HỎA TIỄN H6\nPHÍM E", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 3) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(e_x1 - 1, e_y1 - 1, e_x2 + 1, e_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(e_x1, e_y1, e_x2, e_y2, true);
+}
+
+
+// --- 4. [R] GIANT A1 TNT BOMB BUTTON ---
+var r_x1 = hud_x + 345;
+var r_y1 = hud_y + 10;
+var r_x2 = r_x1 + 95;
+var r_y2 = r_y1 + 55;
+
+// Background base
+if (r_cooldown == 0) {
+    if (targeting_mode == 4) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(75, 25, 80)); // Royal purple
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(r_x1, r_y1, r_x2, r_y2, false);
+
+if (r_cooldown > 0) {
+    var r_pct = r_cooldown / r_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(r_x1, r_y2 - (r_y2 - r_y1) * r_pct, r_x2, r_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (r_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "COOLDOWN\n" + string(ceil(r_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 4 ? c_yellow : c_white);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "BỘC PHÁ A1\nPHÍM R", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 4) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(r_x1 - 1, r_y1 - 1, r_x2 + 1, r_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(r_x1, r_y1, r_x2, r_y2, true);
+}
+
+// Reset draw settings
+draw_set_alpha(1.0);
+draw_set_color(c_white);
+#endregion
+
+#region Draw Rain Overlay & Weather Widget
+// 1. Draw lightning screen-wide flash overlay during Storm
+if (lightning_active && lightning_alpha > 0) {
+    draw_set_color(c_white);
+    draw_set_alpha(lightning_alpha);
+    draw_rectangle(0, 0, 1280, 720, false);
+    draw_set_alpha(1.0);
+}
+
+// 2. Draw diagonal rain streaks on GUI when weather is active (state > 0)
+if (weather_state > 0) {
+    var draw_col = (weather_state == 2) ? make_color_rgb(140, 180, 255) : make_color_rgb(180, 210, 255);
+    var slant = (weather_state == 2) ? 0.8 : 0.4;
+    var alpha = (weather_state == 2) ? 0.55 : 0.35;
+    
+    draw_set_color(draw_col);
+    draw_set_alpha(alpha);
+    for (var i = 0; i < array_length(rain_drops); i++) {
+        var drop = rain_drops[i];
+        draw_line_width(drop.x, drop.y, drop.x + drop.len * slant, drop.y + drop.len, (weather_state == 2) ? 2.0 : 1.5);
+    }
+    
+    // Soft vignette/overlay color based on weather severity
+    var overlay_col = (weather_state == 2) ? make_color_rgb(30, 45, 75) : make_color_rgb(50, 80, 120);
+    var overlay_alpha = (weather_state == 2) ? 0.16 : 0.08;
+    draw_set_color(overlay_col);
+    draw_set_alpha(overlay_alpha);
+    draw_rectangle(0, 0, 1280, 720, false);
+}
+
+// 3. Draw Weather Widget at bottom right
+var wx = 1100;
+var wy = 645;
+var ww = 165;
+var wh = 55;
+
+// Glassmorphism background
+draw_set_color(c_black);
+draw_set_alpha(0.7);
+draw_rectangle(wx, wy, wx + ww, wy + wh, false);
+
+// Gold military border
+draw_set_color(make_color_rgb(180, 150, 50));
+draw_set_alpha(0.85);
+draw_rectangle(wx - 1, wy - 1, wx + ww + 1, wy + wh + 1, true);
+
+// Text styling
+draw_set_font(fnt_vietnamese);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+
+draw_set_color(c_white);
+draw_set_alpha(0.5);
+draw_text_transformed(wx + ww/2, wy + 12, "KHÍ HẬU CHIẾN TRƯỜNG", 0.5, 0.5, 0);
+
+// Status indicator
+draw_set_alpha(1.0);
+if (weather_state == 0) {
+    draw_set_color(c_yellow);
+    draw_text_transformed(wx + ww/2, wy + 28, "☀ KHÔ RÁO", 0.65, 0.65, 0);
+} else if (weather_state == 1) {
+    draw_set_color(make_color_rgb(100, 200, 255));
+    draw_text_transformed(wx + ww/2, wy + 28, "🌧 BÙN LẦY (-30% SPD)", 0.62, 0.62, 0);
+} else if (weather_state == 2) {
+    // Storm status flashes between purple and red!
+    var pulse = 0.5 + sin(current_time * 0.015) * 0.5;
+    var storm_col = merge_color(make_color_rgb(180, 0, 250), make_color_rgb(255, 60, 60), pulse);
+    draw_set_color(storm_col);
+    draw_text_transformed(wx + ww/2, wy + 28, "⚡ GIÔNG BÃO (-50% SPD)", 0.60, 0.60, 0);
+}
+
+// Progress bar showing time until switch
+var w_pct = 1 - (weather_timer / weather_duration);
+draw_set_color(c_dkgray);
+draw_rectangle(wx + 10, wy + wh - 10, wx + ww - 10, wy + wh - 7, false);
+
+var bar_col = c_yellow;
+if (weather_state == 1) bar_col = make_color_rgb(0, 150, 255);
+else if (weather_state == 2) bar_col = make_color_rgb(180, 0, 200); // Purple bar for storm!
+
+draw_set_color(bar_col);
+draw_rectangle(wx + 10, wy + wh - 10, wx + 10 + (ww - 20) * w_pct, wy + wh - 7, false);
+
+// Reset draw settings
+draw_set_alpha(1.0);
+draw_set_color(c_white);
+#endregion
+
 #endregion
