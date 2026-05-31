@@ -1,2 +1,2 @@
 speed=0
-image_angle=90
+image_angle=180

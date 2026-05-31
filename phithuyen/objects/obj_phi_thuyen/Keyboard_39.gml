@@ -1,3 +1,3 @@
  speed=5
- image_angle=90-15
+ image_angle=180-15
  direction=0

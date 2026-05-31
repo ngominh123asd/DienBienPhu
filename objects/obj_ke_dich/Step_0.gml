@@ -1,5 +1,9 @@
 /// @description Move back and forth
 
+if (shield_hit_timer > 0) {
+    shield_hit_timer -= 1;
+}
+
 // Turn around when reaching screen boundaries
 if (x <= 40) {
     hspeed = abs(hspeed); // Move right
@@ -42,6 +46,45 @@ if (sprite_index == sEn_Dragon) {
                 b.speed = 4.5;
                 b.direction = dirs[i];
                 b.image_angle = dirs[i] - 90; // Align laser sprite with direction
+            }
+        }
+    }
+    
+    // 3. Fire Carpet Skill (Every 5 seconds / 300 frames)
+    firecarpet_cooldown -= 1;
+    if (firecarpet_cooldown <= 0 && firecarpet_warning_timer <= 0) {
+        // Start warning phase
+        firecarpet_warning_timer = 90; // 1.5 seconds warning
+        firecarpet_target_x = x; // default
+        if (instance_exists(obj_phi_thuyen)) {
+            firecarpet_target_x = obj_phi_thuyen.x;
+        }
+        
+        // Play warning/charging sound
+        audio_play_sound(sndShootFireball, 10, 0);
+    }
+    
+    if (firecarpet_warning_timer > 0) {
+        firecarpet_warning_timer -= 1;
+        if (firecarpet_warning_timer == 0) {
+            // Trigger! Shoot a cluster of 8 fast fire-lasers down the targeted column
+            firecarpet_cooldown = 300; // 5 seconds cooldown before next carpet
+            
+            // Play heavy dragon fire sound
+            audio_play_sound(sndDragonfire, 10, 0);
+            
+            for (var i = 0; i < 8; i++) {
+                var bx = firecarpet_target_x + random_range(-60, 60);
+                var by = y + 30 - random_range(0, 100); // staggered starting heights
+                
+                var f = instance_create_depth(bx, by, depth - 1, obj_lazer_ke_dich);
+                if (instance_exists(f)) {
+                    f.speed = 6.5; // faster speed
+                    f.direction = 270; // straight down
+                    f.image_blend = c_red; // red fire hazard
+                    f.image_xscale = 1.5; // scale up bullet
+                    f.image_yscale = 1.5;
+                }
             }
         }
     }

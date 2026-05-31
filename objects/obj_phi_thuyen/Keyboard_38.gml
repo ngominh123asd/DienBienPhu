@@ -1,3 +1,3 @@
 if (!alive) { speed = 0; exit; }
-speed = 5;
+speed = 7;
 direction = 90;
