@@ -75,6 +75,20 @@ if (_hasEnemy || _hasLocot) {
 		}
 	}
 	
+	// Ép người chơi phải kiểm tra thêm obj_locot_boss phòng trường hợp lỗi bộ nhớ đệm inheritance
+	if (instance_exists(obj_locot_boss)) {
+		for (var i = 0; i < instance_number(obj_locot_boss); i++) {
+			var loc = instance_find(obj_locot_boss, i);
+			if (loc.CurHp > 0) {
+				var d = distance_to_object(loc);
+				if (d < _distLocot) {
+					_distLocot = d;
+					_nearLocot = loc;
+				}
+			}
+		}
+	}
+	
 	// Chọn target gần hơn để đánh
 	if (_distEnemy <= _distLocot) {
 		NearestEnemy = _nearEnemy;
@@ -388,4 +402,18 @@ with (oPar_PlayerUnit) {
 	}
 }
 
+#endregion
+
+#region Chống kẹt tường (Anti-stuck)
+// Khi lính quay mặt (lật sprite), bounding box có thể thay đổi vài pixel
+// Điều này khiến lính bị đè vào tường và kẹt vĩnh viễn. 
+// Đoạn code này sẽ tự động đẩy lính ra khỏi tường nếu phát hiện bị kẹt.
+if (place_meeting(x, y, oPar_Collidable)) {
+    for (var i = 1; i <= 6; i++) {
+        if (!place_meeting(x + i, y, oPar_Collidable)) { x += i; break; }
+        if (!place_meeting(x - i, y, oPar_Collidable)) { x -= i; break; }
+        if (!place_meeting(x, y + i, oPar_Collidable)) { y += i; break; }
+        if (!place_meeting(x, y - i, oPar_Collidable)) { y -= i; break; }
+    }
+}
 #endregion

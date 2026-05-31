@@ -46,7 +46,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.14.3.217",
+    "IDEVersion":"2024.14.4.222",
   },
   "name":"GM48 36",
   "resources":[
@@ -61,6 +61,7 @@
     {"id":{"name":"obj_ke_dich","path":"objects/obj_ke_dich/obj_ke_dich.yy",},},
     {"id":{"name":"obj_lazer_ke_dich","path":"objects/obj_lazer_ke_dich/obj_lazer_ke_dich.yy",},},
     {"id":{"name":"obj_lazer","path":"objects/obj_lazer/obj_lazer.yy",},},
+    {"id":{"name":"obj_locot_boss","path":"objects/obj_locot_boss/obj_locot_boss.yy",},},
     {"id":{"name":"obj_missile_ke_dich","path":"objects/obj_missile_ke_dich/obj_missile_ke_dich.yy",},},
     {"id":{"name":"obj_phi_thuyen","path":"objects/obj_phi_thuyen/obj_phi_thuyen.yy",},},
     {"id":{"name":"obj_powerup","path":"objects/obj_powerup/obj_powerup.yy",},},
@@ -173,6 +174,7 @@
     {"id":{"name":"spr_ke_dich","path":"sprites/spr_ke_dich/spr_ke_dich.yy",},},
     {"id":{"name":"spr_lazer_ke_dich","path":"sprites/spr_lazer_ke_dich/spr_lazer_ke_dich.yy",},},
     {"id":{"name":"spr_lazer","path":"sprites/spr_lazer/spr_lazer.yy",},},
+    {"id":{"name":"spr_locot_boss","path":"sprites/spr_locot_boss/spr_locot_boss.yy",},},
     {"id":{"name":"spr_tau_san_bay","path":"sprites/spr_tau_san_bay/spr_tau_san_bay.yy",},},
     {"id":{"name":"Sprite2","path":"sprites/Sprite2/Sprite2.yy",},},
     {"id":{"name":"sSelected","path":"sprites/sSelected/sSelected.yy",},},
