@@ -8,7 +8,6 @@ direction = irandom(359);
 
 CanMove = 0;
 
-// Scale down the sprite so it fits perfectly in the room (e.g., 24x24 pixels)
-var target_size = 24;
-image_xscale = target_size / sprite_get_width(sprite_index);
-image_yscale = target_size / sprite_get_height(sprite_index);
+// Hardcoded scale to make the 640x640 sprite reasonable (e.g. ~10x10 pixels)
+image_xscale = 0.015;
+image_yscale = 0.015;

@@ -12,7 +12,9 @@ if ShowText{
 		draw_set_font(fnt_vietnamese);
 	draw_text_ext_transformed(640,100,"You died.",24,600,4,4,0);
 	draw_set_color(c_white);
-	draw_text_ext_transformed(640,300,string(Text),24,600,2,2,0);
+	draw_set_valign(fa_middle);
+	draw_text_ext_transformed(640,400,string(Text),24,600,2,2,0);
+	draw_set_valign(fa_top);
 	draw_set_halign(fa_left);
 	
 	if keyboard_check_pressed(vk_enter){

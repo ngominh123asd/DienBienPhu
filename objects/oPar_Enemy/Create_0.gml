@@ -2,7 +2,7 @@
 
 MaxHp = 2; //Max HP
 CurHp = 2; //Hp
-Power = 1; //Att pow
+Power = 2; //Att pow
 Spd = .25; //Spd
 NearestEnemy = noone;
 

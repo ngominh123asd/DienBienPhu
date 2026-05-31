@@ -16,3 +16,7 @@ if CanMove{
 		}
 	}
 }
+
+// Force the scale every frame to bypass IDE cache
+image_xscale = 0.015;
+image_yscale = 0.015;

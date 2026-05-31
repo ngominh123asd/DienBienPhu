@@ -42,23 +42,50 @@ if Selected {
 
 #region Fight
 
-if instance_exists(oPar_Enemy) {
+// === Tấn công: nhắm cả enemy + locot (chọn gần nhất) ===
+var _hasEnemy = instance_exists(oPar_Enemy);
+var _hasLocot = instance_exists(oPar_locot);
+
+if (_hasEnemy || _hasLocot) {
 	
-	//Get nearest enemy
-	NearestEnemy = instance_nearest(x, y, oPar_Enemy);
+	var _nearEnemy = noone;
+	var _nearLocot = noone;
+	var _distEnemy = 99999;
+	var _distLocot = 99999;
 	
-	// Only auto-aggro (chase) if not currently ordered to move by the user
-	if distance_to_point(DestX, DestY) <= 5 {
-		if distance_to_object(NearestEnemy) < 24 {
-			DestX = NearestEnemy.x;
-			DestY = NearestEnemy.y;
+	if (_hasEnemy) {
+		_nearEnemy = instance_nearest(x, y, oPar_Enemy);
+		_distEnemy = distance_to_object(_nearEnemy);
+	}
+	if (_hasLocot) {
+		var shortest_dist = 99999;
+		for (var i = 0; i < instance_number(oPar_locot); i++) {
+			var loc = instance_find(oPar_locot, i);
+			if (loc.CurHp > 0) {
+				var d = distance_to_object(loc);
+				if (d < shortest_dist) {
+					shortest_dist = d;
+					_nearLocot = loc;
+				}
+			}
+		}
+		
+		if (_nearLocot != noone) {
+			_distLocot = shortest_dist;
 		}
 	}
 	
-	//Attack when in range
+	// Chọn target gần hơn để đánh
+	if (_distEnemy <= _distLocot) {
+		NearestEnemy = _nearEnemy;
+	}
+	else {
+		NearestEnemy = _nearLocot;
+	}
+	
+	// Attack when in range
 	if distance_to_object(NearestEnemy) < AttackDist {
 		
-		//Attack if can
 		if CanAttack {
 			event_user(0);
 		}

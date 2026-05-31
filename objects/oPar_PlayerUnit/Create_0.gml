@@ -3,7 +3,7 @@
 Selected = 0; //If selected
 DestX = x; //Dest to go to xy
 DestY = y;
-Spd = .25;
+Spd = 0.39;
 
 MouseOver = 0; //If mouse is on unit
 CanAttack = 1; //If can attack

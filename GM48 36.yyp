@@ -46,7 +46,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.14.3.217",
+    "IDEVersion":"2024.14.4.222",
   },
   "name":"GM48 36",
   "resources":[
@@ -57,6 +57,7 @@
     {"id":{"name":"oAtt_PlayerFire","path":"objects/oAtt_PlayerFire/oAtt_PlayerFire.yy",},},
     {"id":{"name":"oAtt_PlayerMelee","path":"objects/oAtt_PlayerMelee/oAtt_PlayerMelee.yy",},},
     {"id":{"name":"obj_heart_drop","path":"objects/obj_heart_drop/obj_heart_drop.yy",},},
+    {"id":{"name":"obj_cancu","path":"objects/obj_cancu/obj_cancu.yy",},},
     {"id":{"name":"obj_ke_dich","path":"objects/obj_ke_dich/obj_ke_dich.yy",},},
     {"id":{"name":"obj_lazer_ke_dich","path":"objects/obj_lazer_ke_dich/obj_lazer_ke_dich.yy",},},
     {"id":{"name":"obj_lazer","path":"objects/obj_lazer/obj_lazer.yy",},},
@@ -168,6 +169,7 @@
     {"id":{"name":"sPlayer_Arrows","path":"sprites/sPlayer_Arrows/sPlayer_Arrows.yy",},},
     {"id":{"name":"sPlayer_Fire","path":"sprites/sPlayer_Fire/sPlayer_Fire.yy",},},
     {"id":{"name":"sPlayer_Melee","path":"sprites/sPlayer_Melee/sPlayer_Melee.yy",},},
+    {"id":{"name":"spr_cancu","path":"sprites/spr_cancu/spr_cancu.yy",},},
     {"id":{"name":"spr_ke_dich","path":"sprites/spr_ke_dich/spr_ke_dich.yy",},},
     {"id":{"name":"spr_lazer_ke_dich","path":"sprites/spr_lazer_ke_dich/spr_lazer_ke_dich.yy",},},
     {"id":{"name":"spr_lazer","path":"sprites/spr_lazer/spr_lazer.yy",},},

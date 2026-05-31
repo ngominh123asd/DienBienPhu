@@ -3,9 +3,9 @@
 // Inherit the parent event
 event_inherited();
 
-MaxHp = 150;
-CurHp = 150;
-Power = 2;
+MaxHp = 500;
+CurHp = 500;
+Power = 6;
 
 // Scale B52
 UnitScale = 0.22;

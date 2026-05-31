@@ -9,7 +9,7 @@ with(oPar_PlayerUnit){
 	if Selected{
 		
 		draw_set_color(c_white)
-		draw_text(5,50 + (a * 20), string(Name) + " Lv" + string(Level) + "- HP " + string(CurHp) + "/" + string(MaxHp))
+		draw_text(5, 190 + (a * 20), string(Name) + " Lv" + string(Level) + "- HP " + string(CurHp) + "/" + string(MaxHp))
 		a ++;
 	}
 }
@@ -28,7 +28,7 @@ draw_set_halign(fa_right);
 draw_set_color(c_yellow);
 draw_text(1275,10,"Press 'BACKSPACE' to Quit");
 draw_set_halign(fa_left);
-draw_text(5,680,"Time: " + string(PlayedString));
+draw_text(5,700,"Time: " + string(PlayedString));
 
 #region Draw Minimap
 
@@ -39,9 +39,9 @@ var scale = min(map_max_w / room_width, map_max_h / room_height);
 var minimap_w = room_width * scale;
 var minimap_h = room_height * scale;
 
-var padding = 20;
-var map_x = 1280 - minimap_w - padding;
-var map_y = 720 - minimap_h - padding;
+var padding = 10;
+var map_x = padding;
+var map_y = padding;
 
 // 1. Draw Background (Dark transparent glass)
 draw_set_color(c_black);
@@ -72,6 +72,34 @@ with (oPar_Enemy) {
 	
 	draw_set_color(make_color_rgb(255, 60, 60));
 	draw_circle(ex, ey, 2.5, false);
+}
+
+// 4.5. Draw Special Markers
+// Base (obj_cancu)
+with (obj_cancu) {
+	var bx = map_x + (x / room_width) * minimap_w;
+	var by = map_y + (y / room_height) * minimap_h;
+	
+	draw_set_color(c_aqua);
+	draw_rectangle(bx - 3, by - 3, bx + 3, by + 3, false);
+}
+
+// Bunker (oPar_locot)
+with (oPar_locot) {
+	var lx = map_x + (x / room_width) * minimap_w;
+	var ly = map_y + (y / room_height) * minimap_h;
+	
+	draw_set_color(c_orange);
+	draw_rectangle(lx - 2, ly - 2, lx + 2, ly + 2, false);
+}
+
+// Boss (oEn_Dragon)
+with (oEn_Dragon) {
+	var dx = map_x + (x / room_width) * minimap_w;
+	var dy = map_y + (y / room_height) * minimap_h;
+	
+	draw_set_color(c_fuchsia);
+	draw_circle(dx, dy, 4, false);
 }
 
 // 5. Draw Viewport Camera Box (White transparent rect showing where the camera is looking)
