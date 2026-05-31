@@ -6,7 +6,17 @@ y += (yTo - y)*.05;
 xTo = DestX
 yTo = DestY
 
-var vm = matrix_build_lookat(x,y,-10,x,y,0,0,1,0)
+var shake_x = 0;
+var shake_y = 0;
+if (instance_exists(oCont_Room) && variable_instance_exists(oCont_Room, "screen_shake")) {
+	var s = oCont_Room.screen_shake;
+	if (s > 0) {
+		shake_x = random_range(-s, s);
+		shake_y = random_range(-s, s);
+	}
+}
+
+var vm = matrix_build_lookat(x + shake_x, y + shake_y, -10, x + shake_x, y + shake_y, 0, 0, 1, 0)
 camera_set_view_mat(Camera,vm);
 
 #region Move
@@ -16,14 +26,20 @@ if mouse_check_button_pressed(mb_middle){
 	DestY = mouse_y;
 }
 
-//Get controls
-MoveR = keyboard_check(vk_right) || keyboard_check(ord("D"));
-MoveU = keyboard_check(vk_up) || keyboard_check(ord("W"));
-MoveL = keyboard_check(vk_left) || keyboard_check(ord("A"));
-MoveD = keyboard_check(vk_down) || keyboard_check(ord("S"));
+// Get GUI mouse position for MOBA-style edge scrolling (1280x720 window boundaries)
+var mx = device_mouse_x_to_gui(0);
+var my = device_mouse_y_to_gui(0);
 
-DestX += (MoveR - MoveL) * 4;
-DestY += (MoveD - MoveU) * 4;
+var edge_margin = 15;   // Distance in pixels from screen border to trigger scroll
+var scroll_speed = 8;   // Smooth gliding speed
+
+MoveR = (mx >= 1280 - edge_margin);
+MoveL = (mx <= edge_margin);
+MoveD = (my >= 720 - edge_margin);
+MoveU = (my <= edge_margin);
+
+DestX += (MoveR - MoveL) * scroll_speed;
+DestY += (MoveD - MoveU) * scroll_speed;
 
 var BufferW = ((CamInitW*ZoomFactor)/2);
 var BufferH = ((CamInitH*ZoomFactor)/2)

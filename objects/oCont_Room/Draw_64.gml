@@ -131,4 +131,229 @@ if (instance_exists(oCamera)) {
 draw_set_alpha(1.0);
 draw_set_color(c_white);
 
+#region Dien Bien Phu Tactical HUD Skills Panel
+var hud_x = 410;
+var hud_y = 635;
+var hud_w = 460;
+var hud_h = 75;
+
+// Draw glassmorphism panel background
+draw_set_color(c_black);
+draw_set_alpha(0.75);
+draw_rectangle(hud_x, hud_y, hud_x + hud_w, hud_y + hud_h, false);
+
+// Draw gold military border
+draw_set_color(make_color_rgb(180, 150, 50));
+draw_set_alpha(0.85);
+draw_rectangle(hud_x - 1, hud_y - 1, hud_x + hud_w + 1, hud_y + hud_h + 1, true);
+
+// Set font and alignment
+draw_set_font(fnt_vietnamese);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+
+// --- 1. [Q] AIR STRIKE BUTTON ---
+var q_x1 = hud_x + 15;
+var q_y1 = hud_y + 10;
+var q_x2 = q_x1 + 95;
+var q_y2 = q_y1 + 55;
+
+// Background base
+if (bomb_cooldown == 0) {
+    if (targeting_mode == 1) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(85, 30, 30)); // Deep tactical red
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(q_x1, q_y1, q_x2, q_y2, false);
+
+if (bomb_cooldown > 0) {
+    var q_pct = bomb_cooldown / bomb_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(q_x1, q_y2 - (q_y2 - q_y1) * q_pct, q_x2, q_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (bomb_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "COOLDOWN\n" + string(ceil(bomb_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 1 ? c_yellow : c_white);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÔNG KÍCH\nPHÍM Q", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 1) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(q_x1 - 1, q_y1 - 1, q_x2 + 1, q_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(q_x1, q_y1, q_x2, q_y2, true);
+}
+
+
+// --- 2. [W] AA FLAK BARRAGE BUTTON ---
+var w_x1 = hud_x + 125;
+var w_y1 = hud_y + 10;
+var w_x2 = w_x1 + 95;
+var w_y2 = w_y1 + 55;
+
+// Background base
+if (w_cooldown == 0) {
+    if (targeting_mode == 2) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(30, 80, 85)); // Steel cyan
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(w_x1, w_y1, w_x2, w_y2, false);
+
+if (w_cooldown > 0) {
+    var w_pct = w_cooldown / w_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(w_x1, w_y2 - (w_y2 - w_y1) * w_pct, w_x2, w_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (w_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "COOLDOWN\n" + string(ceil(w_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 2 ? c_yellow : c_white);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "PHÒNG KHÔNG\nPHÍM W", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 2) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(w_x1 - 1, w_y1 - 1, w_x2 + 1, w_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(w_x1, w_y1, w_x2, w_y2, true);
+}
+
+
+// --- 3. [E] KATYUSHA SALVO BUTTON ---
+var e_x1 = hud_x + 235;
+var e_y1 = hud_y + 10;
+var e_x2 = e_x1 + 95;
+var e_y2 = e_y1 + 55;
+
+// Background base
+if (e_cooldown == 0) {
+    if (targeting_mode == 3) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(30, 85, 40)); // Forest green
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(e_x1, e_y1, e_x2, e_y2, false);
+
+if (e_cooldown > 0) {
+    var e_pct = e_cooldown / e_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(e_x1, e_y2 - (e_y2 - e_y1) * e_pct, e_x2, e_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (e_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "COOLDOWN\n" + string(ceil(e_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 3 ? c_yellow : c_white);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "HỎA TIỄN H6\nPHÍM E", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 3) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(e_x1 - 1, e_y1 - 1, e_x2 + 1, e_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(e_x1, e_y1, e_x2, e_y2, true);
+}
+
+
+// --- 4. [R] GIANT A1 TNT BOMB BUTTON ---
+var r_x1 = hud_x + 345;
+var r_y1 = hud_y + 10;
+var r_x2 = r_x1 + 95;
+var r_y2 = r_y1 + 55;
+
+// Background base
+if (r_cooldown == 0) {
+    if (targeting_mode == 4) {
+        var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+        draw_set_color(make_color_rgb(150, 120, 20));
+        draw_set_alpha(0.5 + border_pulse * 0.2);
+    } else {
+        draw_set_color(make_color_rgb(75, 25, 80)); // Royal purple
+        draw_set_alpha(0.6);
+    }
+} else {
+    draw_set_color(c_dkgray);
+    draw_set_alpha(0.4);
+}
+draw_rectangle(r_x1, r_y1, r_x2, r_y2, false);
+
+if (r_cooldown > 0) {
+    var r_pct = r_cooldown / r_max_cooldown;
+    draw_set_color(c_red);
+    draw_set_alpha(0.35);
+    draw_rectangle(r_x1, r_y2 - (r_y2 - r_y1) * r_pct, r_x2, r_y2, false);
+}
+
+draw_set_alpha(1.0);
+if (r_cooldown > 0) {
+    draw_set_color(c_white);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "COOLDOWN\n" + string(ceil(r_cooldown / 60)) + "s", 0.65, 0.65, 0);
+} else {
+    draw_set_color(targeting_mode == 4 ? c_yellow : c_white);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "BỘC PHÁ A1\nPHÍM R", 0.65, 0.65, 0);
+}
+
+if (targeting_mode == 4) {
+    var border_pulse = 0.5 + sin(current_time * 0.01) * 0.3;
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.7 + border_pulse * 0.3);
+    draw_rectangle(r_x1 - 1, r_y1 - 1, r_x2 + 1, r_y2 + 1, true);
+} else {
+    draw_set_color(make_color_rgb(180, 150, 50));
+    draw_set_alpha(0.5);
+    draw_rectangle(r_x1, r_y1, r_x2, r_y2, true);
+}
+
+// Reset draw settings
+draw_set_alpha(1.0);
+draw_set_color(c_white);
+#endregion
+
 #endregion
