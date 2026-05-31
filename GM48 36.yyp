@@ -46,7 +46,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.14.4.222",
+    "IDEVersion":"2024.14.3.217",
   },
   "name":"GM48 36",
   "resources":[
@@ -56,8 +56,8 @@
     {"id":{"name":"oAtt_PlayerArrow","path":"objects/oAtt_PlayerArrow/oAtt_PlayerArrow.yy",},},
     {"id":{"name":"oAtt_PlayerFire","path":"objects/oAtt_PlayerFire/oAtt_PlayerFire.yy",},},
     {"id":{"name":"oAtt_PlayerMelee","path":"objects/oAtt_PlayerMelee/oAtt_PlayerMelee.yy",},},
-    {"id":{"name":"obj_heart_drop","path":"objects/obj_heart_drop/obj_heart_drop.yy",},},
     {"id":{"name":"obj_cancu","path":"objects/obj_cancu/obj_cancu.yy",},},
+    {"id":{"name":"obj_heart_drop","path":"objects/obj_heart_drop/obj_heart_drop.yy",},},
     {"id":{"name":"obj_ke_dich","path":"objects/obj_ke_dich/obj_ke_dich.yy",},},
     {"id":{"name":"obj_lazer_ke_dich","path":"objects/obj_lazer_ke_dich/obj_lazer_ke_dich.yy",},},
     {"id":{"name":"obj_lazer","path":"objects/obj_lazer/obj_lazer.yy",},},

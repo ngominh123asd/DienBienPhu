@@ -10,6 +10,9 @@ if (alive) {
     // Deduct HP
     hp -= 1;
     
+    // Trigger screen shake
+    screen_shake = 12;
+    
     // Destroy enemy laser
     instance_destroy(other);
     
