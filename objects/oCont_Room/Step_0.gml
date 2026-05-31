@@ -57,21 +57,46 @@ if (screen_shake > 0) screen_shake -= 0.5;
 weather_timer++;
 if (weather_timer >= weather_duration) {
 	weather_timer = 0;
-	weather_state = 1 - weather_state;
+	weather_state = (weather_state + 1) % 3; // Sunny (0) -> Rainy (1) -> Stormy (2)
 	
-	// Lightning flash and thunder rumble when transitioning to rain
-	if (weather_state == 1) {
-		screen_shake = 10;
+	// Create screen-wide flash & thunder clap when transitioning to rain or storm!
+	if (weather_state == 1 || weather_state == 2) {
+		screen_shake = 12;
 		audio_play_sound(sndDragonfireHit, 9, false); // Thunder sound
 	}
 }
 
+// Lightning simulator during Stormy weather (state == 2)
+if (weather_state == 2) {
+	if (!lightning_active && irandom(160) == 0) { // Trigger lightning strike
+		lightning_active = true;
+		lightning_alpha = 0.8;
+		screen_shake = 18; // Heavy ground rumble!
+		audio_play_sound(sndDragonfireHit, 10, false); // Massive thunder strike
+	}
+	
+	if (lightning_active) {
+		// Natural double-strike flicker simulation
+		lightning_alpha -= random_range(0.04, 0.1);
+		if (lightning_alpha <= 0) {
+			lightning_active = false;
+			lightning_alpha = 0;
+		}
+	}
+} else {
+	lightning_active = false;
+	lightning_alpha = 0;
+}
+
 // Update rain particle positions & slow down enemies
-if (weather_state == 1) {
+if (weather_state > 0) {
+	// Rain falls 2.2x faster and is much more slanted during severe Storm
+	var speed_mult = (weather_state == 2) ? 2.2 : 1.0;
+	
 	for (var i = 0; i < array_length(rain_drops); i++) {
 		var drop = rain_drops[i];
-		drop.x += drop.spd * 0.4;
-		drop.y += drop.spd;
+		drop.x += drop.spd * 0.8 * speed_mult; // Heavy wind slant
+		drop.y += drop.spd * speed_mult;
 		if (drop.y > 720) {
 			drop.y = -30;
 			drop.x = irandom(1280);
@@ -82,12 +107,13 @@ if (weather_state == 1) {
 		}
 	}
 	
-	// Slow down all enemies in muddy rain season by 30%
+	// Apply movement slow debuff to all enemies based on mud/storm severity
+	var slow_mult = (weather_state == 2) ? 0.5 : 0.7; // 50% slow in Storm, 30% in Rain
 	with (oPar_Enemy) {
 		if (!variable_instance_exists(self, "base_spd")) {
 			base_spd = Spd;
 		}
-		Spd = base_spd * 0.7;
+		Spd = base_spd * slow_mult;
 	}
 } else {
 	// Restore normal speed when sunny

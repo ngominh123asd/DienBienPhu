@@ -37,8 +37,12 @@ screen_shake = 0;
 
 // 3. Dynamic Weather & Monsoon Mud System
 weather_timer = 0;
-weather_state = 0; // 0: Sunny, 1: Rainy (Monsoon Mud)
+weather_state = 0; // 0: Sunny, 1: Rainy (Monsoon Mud), 2: Stormy (Thunderstorm)
 weather_duration = 1800; // 30 seconds at 60 FPS
+
+// Lightning state machine
+lightning_active = false;
+lightning_alpha = 0;
 
 // Initialize screen-space rain streaks
 rain_drops = [];

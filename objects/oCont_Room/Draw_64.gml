@@ -357,22 +357,36 @@ draw_set_color(c_white);
 #endregion
 
 #region Draw Rain Overlay & Weather Widget
-// 1. Draw diagonal rain streaks on GUI when weather is Rainy
-if (weather_state == 1) {
-    draw_set_color(make_color_rgb(180, 210, 255));
-    draw_set_alpha(0.35);
+// 1. Draw lightning screen-wide flash overlay during Storm
+if (lightning_active && lightning_alpha > 0) {
+    draw_set_color(c_white);
+    draw_set_alpha(lightning_alpha);
+    draw_rectangle(0, 0, 1280, 720, false);
+    draw_set_alpha(1.0);
+}
+
+// 2. Draw diagonal rain streaks on GUI when weather is active (state > 0)
+if (weather_state > 0) {
+    var draw_col = (weather_state == 2) ? make_color_rgb(140, 180, 255) : make_color_rgb(180, 210, 255);
+    var slant = (weather_state == 2) ? 0.8 : 0.4;
+    var alpha = (weather_state == 2) ? 0.55 : 0.35;
+    
+    draw_set_color(draw_col);
+    draw_set_alpha(alpha);
     for (var i = 0; i < array_length(rain_drops); i++) {
         var drop = rain_drops[i];
-        draw_line_width(drop.x, drop.y, drop.x + drop.len * 0.4, drop.y + drop.len, 1.5);
+        draw_line_width(drop.x, drop.y, drop.x + drop.len * slant, drop.y + drop.len, (weather_state == 2) ? 2.0 : 1.5);
     }
     
-    // Soft blue vignette tint around borders to give humid wet look
-    draw_set_color(make_color_rgb(50, 80, 120));
-    draw_set_alpha(0.08);
+    // Soft vignette/overlay color based on weather severity
+    var overlay_col = (weather_state == 2) ? make_color_rgb(30, 45, 75) : make_color_rgb(50, 80, 120);
+    var overlay_alpha = (weather_state == 2) ? 0.16 : 0.08;
+    draw_set_color(overlay_col);
+    draw_set_alpha(overlay_alpha);
     draw_rectangle(0, 0, 1280, 720, false);
 }
 
-// 2. Draw Weather Widget at bottom right
+// 3. Draw Weather Widget at bottom right
 var wx = 1100;
 var wy = 645;
 var ww = 165;
@@ -402,9 +416,15 @@ draw_set_alpha(1.0);
 if (weather_state == 0) {
     draw_set_color(c_yellow);
     draw_text_transformed(wx + ww/2, wy + 28, "☀ KHÔ RÁO", 0.65, 0.65, 0);
-} else {
+} else if (weather_state == 1) {
     draw_set_color(make_color_rgb(100, 200, 255));
     draw_text_transformed(wx + ww/2, wy + 28, "🌧 BÙN LẦY (-30% SPD)", 0.62, 0.62, 0);
+} else if (weather_state == 2) {
+    // Storm status flashes between purple and red!
+    var pulse = 0.5 + sin(current_time * 0.015) * 0.5;
+    var storm_col = merge_color(make_color_rgb(180, 0, 250), make_color_rgb(255, 60, 60), pulse);
+    draw_set_color(storm_col);
+    draw_text_transformed(wx + ww/2, wy + 28, "⚡ GIÔNG BÃO (-50% SPD)", 0.60, 0.60, 0);
 }
 
 // Progress bar showing time until switch
@@ -412,7 +432,11 @@ var w_pct = 1 - (weather_timer / weather_duration);
 draw_set_color(c_dkgray);
 draw_rectangle(wx + 10, wy + wh - 10, wx + ww - 10, wy + wh - 7, false);
 
-draw_set_color(weather_state == 0 ? c_yellow : make_color_rgb(0, 150, 255));
+var bar_col = c_yellow;
+if (weather_state == 1) bar_col = make_color_rgb(0, 150, 255);
+else if (weather_state == 2) bar_col = make_color_rgb(180, 0, 200); // Purple bar for storm!
+
+draw_set_color(bar_col);
 draw_rectangle(wx + 10, wy + wh - 10, wx + 10 + (ww - 20) * w_pct, wy + wh - 7, false);
 
 // Reset draw settings
