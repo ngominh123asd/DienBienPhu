@@ -34,3 +34,19 @@ katyusha_queue = [];
 
 // 2. Camera screen shake
 screen_shake = 0;
+
+// 3. Dynamic Weather & Monsoon Mud System
+weather_timer = 0;
+weather_state = 0; // 0: Sunny, 1: Rainy (Monsoon Mud)
+weather_duration = 1800; // 30 seconds at 60 FPS
+
+// Initialize screen-space rain streaks
+rain_drops = [];
+for (var i = 0; i < 80; i++) {
+    array_push(rain_drops, {
+        x: irandom(1280),
+        y: irandom(720),
+        len: irandom_range(15, 30),
+        spd: irandom_range(12, 18)
+    });
+}

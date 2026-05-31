@@ -53,6 +53,51 @@ if (e_cooldown > 0) e_cooldown--;
 if (r_cooldown > 0) r_cooldown--;
 if (screen_shake > 0) screen_shake -= 0.5;
 
+// Update Weather Timer & State
+weather_timer++;
+if (weather_timer >= weather_duration) {
+	weather_timer = 0;
+	weather_state = 1 - weather_state;
+	
+	// Lightning flash and thunder rumble when transitioning to rain
+	if (weather_state == 1) {
+		screen_shake = 10;
+		audio_play_sound(sndDragonfireHit, 9, false); // Thunder sound
+	}
+}
+
+// Update rain particle positions & slow down enemies
+if (weather_state == 1) {
+	for (var i = 0; i < array_length(rain_drops); i++) {
+		var drop = rain_drops[i];
+		drop.x += drop.spd * 0.4;
+		drop.y += drop.spd;
+		if (drop.y > 720) {
+			drop.y = -30;
+			drop.x = irandom(1280);
+		}
+		if (drop.x > 1280) {
+			drop.x = -30;
+			drop.y = irandom(720);
+		}
+	}
+	
+	// Slow down all enemies in muddy rain season by 30%
+	with (oPar_Enemy) {
+		if (!variable_instance_exists(self, "base_spd")) {
+			base_spd = Spd;
+		}
+		Spd = base_spd * 0.7;
+	}
+} else {
+	// Restore normal speed when sunny
+	with (oPar_Enemy) {
+		if (variable_instance_exists(self, "base_spd")) {
+			Spd = base_spd;
+		}
+	}
+}
+
 // Process Katyusha Rocket Strikes over time (salvo queue)
 for (var i = array_length(katyusha_queue) - 1; i >= 0; i--) {
 	var item = katyusha_queue[i];

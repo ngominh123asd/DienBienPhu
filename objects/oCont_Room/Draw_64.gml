@@ -356,4 +356,68 @@ draw_set_alpha(1.0);
 draw_set_color(c_white);
 #endregion
 
+#region Draw Rain Overlay & Weather Widget
+// 1. Draw diagonal rain streaks on GUI when weather is Rainy
+if (weather_state == 1) {
+    draw_set_color(make_color_rgb(180, 210, 255));
+    draw_set_alpha(0.35);
+    for (var i = 0; i < array_length(rain_drops); i++) {
+        var drop = rain_drops[i];
+        draw_line_width(drop.x, drop.y, drop.x + drop.len * 0.4, drop.y + drop.len, 1.5);
+    }
+    
+    // Soft blue vignette tint around borders to give humid wet look
+    draw_set_color(make_color_rgb(50, 80, 120));
+    draw_set_alpha(0.08);
+    draw_rectangle(0, 0, 1280, 720, false);
+}
+
+// 2. Draw Weather Widget at bottom right
+var wx = 1100;
+var wy = 645;
+var ww = 165;
+var wh = 55;
+
+// Glassmorphism background
+draw_set_color(c_black);
+draw_set_alpha(0.7);
+draw_rectangle(wx, wy, wx + ww, wy + wh, false);
+
+// Gold military border
+draw_set_color(make_color_rgb(180, 150, 50));
+draw_set_alpha(0.85);
+draw_rectangle(wx - 1, wy - 1, wx + ww + 1, wy + wh + 1, true);
+
+// Text styling
+draw_set_font(fnt_vietnamese);
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+
+draw_set_color(c_white);
+draw_set_alpha(0.5);
+draw_text_transformed(wx + ww/2, wy + 12, "KHÍ HẬU CHIẾN TRƯỜNG", 0.5, 0.5, 0);
+
+// Status indicator
+draw_set_alpha(1.0);
+if (weather_state == 0) {
+    draw_set_color(c_yellow);
+    draw_text_transformed(wx + ww/2, wy + 28, "☀ KHÔ RÁO", 0.65, 0.65, 0);
+} else {
+    draw_set_color(make_color_rgb(100, 200, 255));
+    draw_text_transformed(wx + ww/2, wy + 28, "🌧 BÙN LẦY (-30% SPD)", 0.62, 0.62, 0);
+}
+
+// Progress bar showing time until switch
+var w_pct = 1 - (weather_timer / weather_duration);
+draw_set_color(c_dkgray);
+draw_rectangle(wx + 10, wy + wh - 10, wx + ww - 10, wy + wh - 7, false);
+
+draw_set_color(weather_state == 0 ? c_yellow : make_color_rgb(0, 150, 255));
+draw_rectangle(wx + 10, wy + wh - 10, wx + 10 + (ww - 20) * w_pct, wy + wh - 7, false);
+
+// Reset draw settings
+draw_set_alpha(1.0);
+draw_set_color(c_white);
+#endregion
+
 #endregion
