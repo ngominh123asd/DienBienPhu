@@ -8,7 +8,7 @@ UpgradedTo100 = false;
 UpgradedTo150 = false;
 
 // Combat
-Power = 4;
+Power = 2;
 CanAttack = 1;
 NearestEnemy = noone;
 Aggroed = false; // Chỉ tấn công khi bị tấn công trước

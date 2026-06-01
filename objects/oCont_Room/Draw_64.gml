@@ -255,10 +255,10 @@ if (!skill_q_unlocked) {
     draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
 } else if (bomb_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "COOLDOWN\n" + string(ceil(bomb_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "COOLDOWN\n" + string(ceil(bomb_cooldown / 60)) + "s");
 } else {
     draw_set_color(targeting_mode == 1 ? c_yellow : c_white);
-    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÔNG KÍCH\nPHÍM Q", 0.65, 0.65, 0);
+    draw_text((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÔNG KÍCH\nPHÍM Q");
 }
 
 if (skill_q_unlocked && targeting_mode == 1) {
@@ -311,10 +311,10 @@ if (!skill_w_unlocked) {
     draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
 } else if (w_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "COOLDOWN\n" + string(ceil(w_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "COOLDOWN\n" + string(ceil(w_cooldown / 60)) + "s");
 } else {
     draw_set_color(targeting_mode == 2 ? c_yellow : c_white);
-    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "PHÒNG KHÔNG\nPHÍM W", 0.65, 0.65, 0);
+    draw_text((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "PHÒNG KHÔNG\nPHÍM W");
 }
 
 if (skill_w_unlocked && targeting_mode == 2) {
@@ -367,10 +367,10 @@ if (!skill_e_unlocked) {
     draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
 } else if (e_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "COOLDOWN\n" + string(ceil(e_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "COOLDOWN\n" + string(ceil(e_cooldown / 60)) + "s");
 } else {
     draw_set_color(targeting_mode == 3 ? c_yellow : c_white);
-    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "HỎA TIỄN H6\nPHÍM E", 0.65, 0.65, 0);
+    draw_text((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "HỎA TIỄN H6\nPHÍM E");
 }
 
 if (skill_e_unlocked && targeting_mode == 3) {
@@ -423,10 +423,10 @@ if (!skill_r_unlocked) {
     draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
 } else if (r_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "COOLDOWN\n" + string(ceil(r_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "COOLDOWN\n" + string(ceil(r_cooldown / 60)) + "s");
 } else {
     draw_set_color(targeting_mode == 4 ? c_yellow : c_white);
-    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "BỘC PHÁ A1\nPHÍM R", 0.65, 0.65, 0);
+    draw_text((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "BỘC PHÁ A1\nPHÍM R");
 }
 
 if (skill_r_unlocked && targeting_mode == 4) {
@@ -498,22 +498,22 @@ draw_set_valign(fa_middle);
 
 draw_set_color(c_white);
 draw_set_alpha(0.5);
-draw_text_transformed(wx + ww/2, wy + 12, "KHÍ HẬU CHIẾN TRƯỜNG", 0.5, 0.5, 0);
+draw_text(wx + ww/2, wy + 12, "KHÍ HẬU CHIẾN TRƯỜNG");
 
 // Status indicator
 draw_set_alpha(1.0);
 if (weather_state == 0) {
     draw_set_color(c_yellow);
-    draw_text_transformed(wx + ww/2, wy + 28, "☀ KHÔ RÁO", 0.65, 0.65, 0);
+    draw_text(wx + ww/2, wy + 28, "KHÔ RÁO");
 } else if (weather_state == 1) {
     draw_set_color(make_color_rgb(100, 200, 255));
-    draw_text_transformed(wx + ww/2, wy + 28, "🌧 BÙN LẦY (-30% SPD)", 0.62, 0.62, 0);
+    draw_text(wx + ww/2, wy + 28, "BÙN LẦY (-30% SPD)");
 } else if (weather_state == 2) {
     // Storm status flashes between purple and red!
     var pulse = 0.5 + sin(current_time * 0.015) * 0.5;
     var storm_col = merge_color(make_color_rgb(180, 0, 250), make_color_rgb(255, 60, 60), pulse);
     draw_set_color(storm_col);
-    draw_text_transformed(wx + ww/2, wy + 28, "⚡ GIÔNG BÃO (-50% SPD)", 0.60, 0.60, 0);
+    draw_text(wx + ww/2, wy + 28, "GIÔNG BÃO (-50% SPD)");
 }
 
 // Progress bar showing time until switch
