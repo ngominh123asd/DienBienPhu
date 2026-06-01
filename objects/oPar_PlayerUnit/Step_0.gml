@@ -6,6 +6,86 @@ RClick = mouse_check_button_pressed(mb_right);
 Cancel = keyboard_check_pressed(vk_escape);
 NextLevelExp = round((Level + 1.33) * 3); //Next level xp
 
+// Initialize prev_hp if it doesn't exist
+if (!variable_instance_exists(self, "prev_hp")) {
+    prev_hp = CurHp;
+}
+
+// 1.5. Global Damage Interception & Reduction
+if (CurHp < prev_hp) {
+    var damage_taken = prev_hp - CurHp;
+    
+    // Check if currently under the effect of Invincibility
+    if (instance_exists(oCont_Room) && oCont_Room.invincible_timer > 0) {
+        CurHp = prev_hp; // Completely restore HP
+    } else {
+        var shield_reduced = false;
+        
+        // A. Bế Văn Đàn's W (Giá Súng / Vanguard Stance) gives him 50% damage reduction
+        if (variable_instance_exists(self, "IsHero") && IsHero && HeroName == "Bế Văn Đàn" && vanguard_timer > 0) {
+            shield_reduced = true;
+        }
+        
+        // B. Bế Văn Đàn's E (Lá Chắn / Dome Shield) gives all nearby allies (within 200px) 50% damage reduction
+        if (!shield_reduced) {
+            with (oPar_PlayerUnit) {
+                if (variable_instance_exists(self, "IsHero") && IsHero && HeroName == "Bế Văn Đàn" && shield_timer > 0) {
+                    if (point_distance(x, y, other.x, other.y) <= 200) {
+                        shield_reduced = true;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (shield_reduced) {
+            var refund = floor(damage_taken * 0.5);
+            CurHp += refund;
+            effect_create_above(ef_spark, x, y, 0.3, c_aqua);
+        }
+    }
+}
+prev_hp = CurHp; // Update prev_hp for the next frame's comparison
+
+// 1.5.5. Invincibility recovery (Chapter 3 Reward)
+if (instance_exists(oCont_Room) && oCont_Room.invincible_timer > 0) {
+	CurHp = MaxHp; // Immune to dying, heal to full!
+}
+
+// 1.6. Penalty Debuff: supply cutoff (lose 2% MaxHP every 60 frames)
+if (instance_exists(oCont_Room) && oCont_Room.debuff_active && oCont_Room.debuff_type == "total_supply_cutoff") {
+	if (irandom(59) == 0) { // roughly once per second
+		CurHp = max(1, CurHp - ceil(MaxHp * 0.02)); // drains health down to minimum 1 HP
+	}
+}
+
+// 1.7. Hero Specific Skills update & Cooldowns
+if (variable_instance_exists(self, "IsHero") && IsHero) {
+	if (skill_cooldowns[0] > 0) skill_cooldowns[0]--;
+	if (skill_cooldowns[1] > 0) skill_cooldowns[1]--;
+	if (skill_cooldowns[2] > 0) skill_cooldowns[2]--;
+	
+	if (variable_instance_exists(self, "vanguard_timer") && vanguard_timer > 0) {
+		vanguard_timer--;
+		// Rooted in place when vanguard stance is active!
+		DestX = x;
+		DestY = y;
+		AttackDist = 55; // Extended range!
+	} else if (HeroName == "Bế Văn Đàn") {
+		AttackDist = 20; // Base range
+	}
+	
+	if (variable_instance_exists(self, "shield_timer") && shield_timer > 0) {
+		shield_timer--;
+	}
+	
+	// Apply dynamic hero visual scale
+	if (variable_instance_exists(self, "UnitScale")) {
+		image_xscale = UnitScale;
+		image_yscale = UnitScale;
+	}
+}
+
 #region Die
 
 if CurHp <= 0 {

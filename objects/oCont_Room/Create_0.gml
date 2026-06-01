@@ -29,43 +29,103 @@ r_max_cooldown = 5400; // 90 seconds (5400 frames)
 targeting_active = false; // Legacy (for Q aiming)
 targeting_mode = 0; // 0: None, 1: Q, 2: W, 3: E, 4: R
 
-// 1.5. Sidequest & Historical Challenge (Q, W, E, R locks & debuffs)
+// 1.5. RESTRICTED SIDEQUEST SYSTEM: 3 Chapters based on actual Điện Biên Phủ campaign
 sidequest_open = false;
-sidequest_current_question = -1; // -1 for main selection, 0-3 for Q,W,E,R challenges
+sidequest_current_chapter = -1; // -1: Chapter List, 0: Chapter 1, 1: Chapter 2, 2: Chapter 3
+sidequest_current_question = -1; // -1: Inside Chapter Menu, 0-2: Question Index
 
+// Tracks question state for 3 chapters, 3 questions each
+// -1: Unsolved, 0: Failed (Got debuff), 1: Cleared
+chapter_questions_status = [
+    [-1, -1, -1], // Chapter 1 (Phase 1)
+    [-1, -1, -1], // Chapter 2 (Phase 2)
+    [-1, -1, -1]  // Chapter 3 (Phase 3)
+];
+
+// Unlocks & Hero focused variables
 skill_q_unlocked = false;
 skill_w_unlocked = false;
 skill_e_unlocked = false;
 skill_r_unlocked = false;
 
-question_status = [-1, -1, -1, -1]; // -1: Not started, 0: Failed (Got debuff, can retry), 1: Cleared (Unlocked)
+focused_hero = noone; // Currently active/selected hero (tab target)
+
+chapter_upgrade_power = false; // Chapter 2 Upgrade (+50% Power)
+chapter_upgrade_stats = false; // Chapter 3 Upgrade (+80% MaxHP, +50% Spd, +50% AttackSpeed)
+invincible_timer = 0;          // Invincibility buff frame counter (5s = 300 frames)
 
 // Debuff penalty system
 debuff_active = false;
 debuff_timer = 0;
 debuff_type = ""; // "radar_jam", "mud_slow", "ammo_shortage", "enemy_rage"
 
-// Historical questions struct array
-sidequest_questions = [
+// Historical database of 3 Chapters
+sidequest_chapters = [
     {
-        q: "Ai là Tổng Tư lệnh kiêm Bí thư Đảng ủy chỉ huy chiến dịch Điện Biên Phủ?",
-        a: ["A. Tướng Văn Tiến Dũng", "B. Đại tướng Võ Nguyên Giáp", "C. Tướng Nguyễn Chí Thanh", "D. Tướng Hoàng Văn Thái"],
-        correct: 1
+        name: "CHƯƠNG I: ĐỢT TIẾN CÔNG THỨ NHẤT",
+        sub: "Tiêu diệt cứ điểm Him Lam - Độc Lập - Bản Kéo (13/03 - 17/03/1954)",
+        reward_txt: "Mở khóa R: Không Kích, T: Phòng Không & Chi viện Tướng Phan Đình Giót",
+        questions: [
+            {
+                q: "Đợt tiến công thứ nhất của quân ta vào tập đoàn cứ điểm Điện Biên Phủ bắt đầu vào ngày nào?",
+                a: ["A. Ngày 13/03/1954", "B. Ngày 11/03/1954", "C. Ngày 15/03/1954", "D. Ngày 07/05/1954"],
+                correct: 0
+            },
+            {
+                q: "Trận mở màn chiến dịch Điện Biên Phủ, quân ta đã tiêu diệt trung tâm đề kháng nào của địch?",
+                a: ["A. Cứ điểm Bản Kéo", "B. Cứ điểm Him Lam", "C. Phân khu Nam (Hồng Cúm)", "D. Cứ điểm Đồi A1"],
+                correct: 1
+            },
+            {
+                q: "Người anh hùng nào đã lấy thân mình lấp lỗ châu mai trong trận mở màn Him Lam?",
+                a: ["A. Tô Vĩnh Diện", "B. Bế Văn Đàn", "C. Phan Đình Giót", "D. Trần Can"],
+                correct: 2
+            }
+        ]
     },
     {
-        q: "Người anh hùng nào đã lấy thân mình lấp lỗ châu mai trong trận Him Lam?",
-        a: ["A. Phan Đình Giót", "B. Tô Vĩnh Diện", "C. Bế Văn Đàn", "D. Trần Can"],
-        correct: 0
+        name: "CHƯƠNG II: ĐỢT TIẾN CÔNG THỨ HAI",
+        sub: "Tiến công đồi phía Đông & giằng co ác liệt đồi A1 (30/03 - 30/04/1954)",
+        reward_txt: "Mở khóa Y: Hỏa Tiễn & Chi viện Tướng Bế Văn Đàn + Tăng 50% Công Lính",
+        questions: [
+            {
+                q: "Đợt tiến công thứ hai bắt đầu vào thời gian nào và tập trung vào phân khu trọng điểm nào?",
+                a: ["A. Ngày 30/03/1954 - Các đồi phía Đông", "B. Ngày 13/03/1954 - Cứ điểm Him Lam", "C. Ngày 01/05/1954 - Cứ điểm đồi A1", "D. Ngày 07/05/1954 - Hầm De Castries"],
+                correct: 0
+            },
+            {
+                q: "Trận chiến cứ điểm nào giằng co ác liệt và kéo dài nhất trong đợt tiến công thứ hai?",
+                a: ["A. Cứ điểm Đồi D1", "B. Cứ điểm Đồi C1", "C. Cứ điểm Đồi A1", "D. Cứ điểm Đồi E1"],
+                correct: 2
+            },
+            {
+                q: "Người chiến sĩ anh hùng nào đã dũng cảm lấy vai làm giá súng tại Mường Pồn?",
+                a: ["A. La Văn Cầu", "B. Bế Văn Đàn", "C. Tô Vĩnh Diện", "D. Phan Đình Giót"],
+                correct: 1
+            }
+        ]
     },
     {
-        q: "Ai là người anh hùng đã dũng cảm lấy thân mình chèn bánh pháo để cứu pháo?",
-        a: ["A. Bế Văn Đàn", "B. Phan Đình Giót", "C. Tô Vĩnh Diện", "D. La Văn Cầu"],
-        correct: 2
-    },
-    {
-        q: "Quả bộc phá 930kg nổ tại đồi A1 vào đêm ngày nào để mở đường cho ta tổng tiến công?",
-        a: ["A. Đêm 06/05/1954", "B. Đêm 07/05/1954", "C. Đêm 05/05/1954", "D. Đêm 01/05/1954"],
-        correct: 0
+        name: "CHƯƠNG III: ĐỢT TỔNG CÔNG KÍCH BÊN TA",
+        sub: "Tổng tiến công đồi A1 bằng bộc phá 930kg, bắt sống tướng De Castries (01/05 - 07/05/1954)",
+        reward_txt: "Mở khóa U: Bộc Phá & Đội Quân Cuồng Nộ (+80% HP, +50% Tốc, Bất Tử 5s)",
+        questions: [
+            {
+                q: "Để quyết định tiêu diệt đồi A1, quân ta đã cho nổ quả bộc phá nặng bao nhiêu kg và vào đêm nào?",
+                a: ["A. 930 kg - Đêm 06/05/1954", "B. 500 kg - Đêm 05/05/1954", "C. 1000 kg - Đêm 07/05/1954", "D. 200 kg - Đêm 01/05/1954"],
+                correct: 0
+            },
+            {
+                q: "Lá cờ Quyết chiến Quyết thắng của quân ta tung bay trên nóc hầm tướng De Castries vào ngày nào?",
+                a: ["A. Ngày 07/05/1954", "B. Ngày 19/05/1954", "C. Ngày 02/09/1945", "D. Ngày 30/04/1975"],
+                correct: 0
+            },
+            {
+                q: "Tên tướng chỉ huy quân thực dân Pháp tại Điện Biên Phủ bị quân ta bắt sống là ai?",
+                a: ["A. Tướng Navarre", "B. Tướng De Castries (Đờ Cát)", "C. Tướng Cogny", "D. Tướng Salan"],
+                correct: 1
+            }
+        ]
     }
 ];
 
