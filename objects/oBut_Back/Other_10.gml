@@ -18,5 +18,8 @@ if (instance_exists(oBut_Level2)) {
 instance_destroy(); // Destroy oBut_Back
 
 // Re-create Title Buttons
+if (instance_exists(oBut_Start)) instance_destroy(oBut_Start);
+if (instance_exists(oBut_Quit)) instance_destroy(oBut_Quit);
+
 instance_create_layer(start_x, start_y, "Instances", oBut_Start);
 instance_create_layer(back_x, back_y, "Instances", oBut_Quit);

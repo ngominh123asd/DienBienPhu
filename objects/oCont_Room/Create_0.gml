@@ -58,9 +58,9 @@ sidequest_questions = [
         correct: 0
     },
     {
-        q: "Ai là người anh hùng đã dũng cảm lấy thân mình chèn bánh pháo để cứu pháo?",
+        q: "Ai là người anh hùng đã dũng cảm lấy thân mình làm giá súng?",
         a: ["A. Bế Văn Đàn", "B. Phan Đình Giót", "C. Tô Vĩnh Diện", "D. La Văn Cầu"],
-        correct: 2
+        correct: 0
     },
     {
         q: "Quả bộc phá 930kg nổ tại đồi A1 vào đêm ngày nào để mở đường cho ta tổng tiến công?",

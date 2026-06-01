@@ -13,7 +13,7 @@ function scrInitGame(){
 	display_set_gui_size(1280, 720); //Set gui size
 	
 	global.HurtCol = make_color_rgb(255,140,140);
-	window_set_fullscreen(true);
+	window_set_fullscreen(false);
 	window_set_size(1280, 720);
 	display_set_gui_size(1280, 720);
 	

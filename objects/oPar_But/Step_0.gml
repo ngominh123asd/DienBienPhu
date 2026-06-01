@@ -12,7 +12,8 @@ if position_meeting(mouse_x,mouse_y,self){
 	if mouse_check_button_pressed(mb_left){
 		
 		audio_play_sound(sndClickBut,10,0);
-		event_user(0)
+		event_user(0);
+		mouse_clear(mb_left); // Prevent multiple clicks on the same frame
 	}
 	
 }else{
