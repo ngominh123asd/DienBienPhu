@@ -38,12 +38,13 @@ if (mouse_over_sq_btn && !sidequest_open) {
 	CanClick = 0;
 	if (mouse_check_button_pressed(mb_left)) {
 		sidequest_open = true;
-		sidequest_current_question = -1; // Reset to selection menu
+		sidequest_current_chapter = -1; // Reset to Chapter selection list
+		sidequest_current_question = -1;
 		audio_play_sound(sndConvert, 10, false);
 	}
 }
 
-// Main Sidequest Event Handling
+// Main 3-Chapter Sidequest Event Handling
 if (sidequest_open) {
 	CanClick = 0;
 	
@@ -52,17 +53,48 @@ if (sidequest_open) {
 	var box_w = 800; 
 	var box_h = 520;
 	
-	if (sidequest_current_question == -1) {
-		// Selection Menu Click Handling
-		for (var i = 0; i < 4; i++) {
+	if (sidequest_current_chapter == -1) {
+		// --- TẦNG 1: DANH SÁCH 3 CHƯƠNG CHIẾN DỊCH ---
+		for (var i = 0; i < 3; i++) {
+			var ch_w = 700;
+			var ch_h = 95;
+			var ch_x = box_x + (box_w - ch_w) / 2;
+			var ch_y = box_y + 110 + i * 110;
+			
+			var hover = (mx >= ch_x && mx <= ch_x + ch_w && my >= ch_y && my <= ch_y + ch_h);
+			if (hover && mouse_check_button_pressed(mb_left)) {
+				sidequest_current_chapter = i;
+				sidequest_current_question = -1; // Go to Chapter question list
+				audio_play_sound(sndConvert, 10, false);
+			}
+		}
+		
+		// Close button
+		var close_w = 180;
+		var close_h = 45;
+		var close_x = box_x + (box_w - close_w) / 2;
+		var close_y = box_y + box_h - 65;
+		var close_hover = (mx >= close_x && mx <= close_x + close_w && my >= close_y && my <= close_y + close_h);
+		if (close_hover && mouse_check_button_pressed(mb_left)) {
+			sidequest_open = false;
+			audio_play_sound(sndConvert, 10, false);
+		}
+	} 
+	else if (sidequest_current_question == -1) {
+		// --- TẦNG 2: DANH SÁCH 3 CÂU HỎI TRONG CHƯƠNG ---
+		var ch_idx = sidequest_current_chapter;
+		
+		// 3 Question Buttons
+		for (var i = 0; i < 3; i++) {
 			var btn_w = 700;
 			var btn_h = 65;
 			var btn_x = box_x + (box_w - btn_w) / 2;
-			var btn_y = box_y + 110 + i * 80;
+			var btn_y = box_y + 120 + i * 85;
 			
 			var hover = (mx >= btn_x && mx <= btn_x + btn_w && my >= btn_y && my <= btn_y + btn_h);
 			if (hover && mouse_check_button_pressed(mb_left)) {
-				if (question_status[i] == 1) {
+				// Only allow answering if not already correct
+				if (chapter_questions_status[ch_idx][i] == 1) {
 					audio_play_sound(sndLevelUp, 10, false);
 				} else {
 					sidequest_current_question = i;
@@ -71,21 +103,22 @@ if (sidequest_open) {
 			}
 		}
 		
-		// Close button at bottom of Menu
-		var close_w = 180;
-		var close_h = 45;
-		var close_x = box_x + (box_w - close_w) / 2;
-		var close_y = box_y + box_h - 70;
-		
-		var close_hover = (mx >= close_x && mx <= close_x + close_w && my >= close_y && my <= close_y + close_h);
-		if (close_hover && mouse_check_button_pressed(mb_left)) {
-			sidequest_open = false;
+		// Back to Chapter List button
+		var back_w = 180;
+		var back_h = 45;
+		var back_x = box_x + (box_w - back_w) / 2;
+		var back_y = box_y + box_h - 65;
+		var back_hover = (mx >= back_x && mx <= back_x + back_w && my >= back_y && my <= back_y + back_h);
+		if (back_hover && mouse_check_button_pressed(mb_left)) {
+			sidequest_current_chapter = -1;
 			audio_play_sound(sndConvert, 10, false);
 		}
-	} else {
-		// Question Click Handling
+	} 
+	else {
+		// --- TẦNG 3: TRẢ LỜI CÂU HỎI TRẮC NGHIỆM ---
+		var ch_idx = sidequest_current_chapter;
 		var q_idx = sidequest_current_question;
-		var q_data = sidequest_questions[q_idx];
+		var q_data = sidequest_chapters[ch_idx].questions[q_idx];
 		
 		// 4 Multiple Choice buttons
 		for (var i = 0; i < 4; i++) {
@@ -98,35 +131,131 @@ if (sidequest_open) {
 			if (hover && mouse_check_button_pressed(mb_left)) {
 				if (i == q_data.correct) {
 					// Correct!
-					question_status[q_idx] = 1;
-					if (q_idx == 0) skill_q_unlocked = true;
-					if (q_idx == 1) skill_w_unlocked = true;
-					if (q_idx == 2) skill_e_unlocked = true;
-					if (q_idx == 3) skill_r_unlocked = true;
-					
+					chapter_questions_status[ch_idx][q_idx] = 1;
 					audio_play_sound(sndLevelUp, 10, false);
-					sidequest_current_question = -1; // Return to selection menu
-				} else {
-					// Incorrect!
-					question_status[q_idx] = 0;
+					sidequest_current_question = -1; // Return to Chapter question selection
 					
-					// Trigger random debuff
+					// --- Check for Chapter Completes (Rewards) ---
+					// Chapter 1 Complete: Spawn Phan Đình Giót Hero + Unlock Q & W (R & T keys)
+					if (ch_idx == 0 && !skill_q_unlocked) {
+						if (chapter_questions_status[0][0] == 1 && chapter_questions_status[0][1] == 1 && chapter_questions_status[0][2] == 1) {
+							skill_q_unlocked = true;
+							skill_w_unlocked = true;
+							
+							// Spawn Phan Đình Giót
+							if (instance_exists(obj_cancu)) {
+								var hero = instance_create_layer(obj_cancu.x - 80, obj_cancu.y - 60, "Instances", oFr_Soldier);
+								if (hero != noone) {
+									hero.IsHero = true;
+									hero.HeroName = "Phan Đình Giót";
+									hero.MaxHp = 30;
+									hero.CurHp = 30;
+									hero.Power = 4;
+									hero.Name = "Phan Đình Giót (Tướng)";
+									hero.skill_cooldowns = [0, 0, 0];
+									hero.skill_max_cooldowns = [300, 480, 600]; // 5s, 8s, 10s cooldowns
+									hero.UnitScale = 0.2; // 30% larger than normal soldier (0.15)
+									hero.vanguard_timer = 0;
+									hero.shield_timer = 0;
+									
+									// Auto select and focus hero immediately
+									hero.Selected = 1;
+									focused_hero = hero;
+									
+									// Visual Effects & Notification
+									instance_create_layer(hero.x, hero.y, "Instances", oFx_LevelUp);
+									var txt = instance_create_layer(hero.x, hero.y, "Instances", oFx_ConvertText);
+									if (txt != noone) {
+										txt.Parent = hero;
+										txt.Text = "PHAN ĐÌNH GIỚT XUẤT TRẬN!";
+									}
+								}
+							}
+						}
+					}
+					// Chapter 2 Complete: Spawn Bế Văn Đàn Hero + Unlock E (Y key) + Tăng 50% Công
+					if (ch_idx == 1 && !skill_e_unlocked) {
+						if (chapter_questions_status[1][0] == 1 && chapter_questions_status[1][1] == 1 && chapter_questions_status[1][2] == 1) {
+							skill_e_unlocked = true;
+							chapter_upgrade_power = true;
+							
+							// Spawn Bế Văn Đàn
+							if (instance_exists(obj_cancu)) {
+								var hero = instance_create_layer(obj_cancu.x - 140, obj_cancu.y - 60, "Instances", oFr_Archer);
+								if (hero != noone) {
+									hero.IsHero = true;
+									hero.HeroName = "Bế Văn Đàn";
+									hero.MaxHp = 25;
+									hero.CurHp = 25;
+									hero.Power = 3;
+									hero.Name = "Bế Văn Đàn (Tướng)";
+									hero.skill_cooldowns = [0, 0, 0];
+									hero.skill_max_cooldowns = [360, 480, 720]; // 6s, 8s, 12s cooldowns
+									hero.UnitScale = 0.2; // 30% larger than normal soldier, perfectly matched in size with Phan Đình Giót
+									hero.vanguard_timer = 0;
+									hero.shield_timer = 0;
+									
+									// Auto select and focus hero immediately
+									hero.Selected = 1;
+									focused_hero = hero;
+									
+									// Visual Effects & Notification
+									instance_create_layer(hero.x, hero.y, "Instances", oFx_LevelUp);
+									var txt = instance_create_layer(hero.x, hero.y, "Instances", oFx_ConvertText);
+									if (txt != noone) {
+										txt.Parent = hero;
+										txt.Text = "BẾ VĂN ĐÀN XUẤT TRẬN!";
+									}
+								}
+							}
+						}
+					}
+					// Chapter 3 Complete: Unlock R (U key) + Cuồng nộ toàn quân + Bất tử 5s
+					if (ch_idx == 2 && !skill_r_unlocked) {
+						if (chapter_questions_status[2][0] == 1 && chapter_questions_status[2][1] == 1 && chapter_questions_status[2][2] == 1) {
+							skill_r_unlocked = true;
+							chapter_upgrade_stats = true;
+							invincible_timer = 300; // 5 seconds of invincibility
+							
+							// Scale all current player units
+							with (oPar_PlayerUnit) {
+								MaxHp = ceil(MaxHp * 1.8); // +80% Max HP
+								CurHp = MaxHp; // heal to full
+								instance_create_layer(x, y, "Instances", oFx_LevelUp); // light effect!
+							}
+						}
+					}
+				} 
+				else {
+					// Incorrect!
+					chapter_questions_status[ch_idx][q_idx] = 0;
+					
+					// Trigger random nightmare penalty debuff (20 seconds = 1200 frames)
 					debuff_active = true;
-					debuff_timer = 900; // 15 seconds
-					debuff_type = choose("radar_jam", "mud_slow", "ammo_shortage", "enemy_rage");
+					debuff_timer = 1200; 
+					debuff_type = choose("french_air_strike", "french_counter_attack", "total_supply_cutoff", "extreme_storm_mines");
 					
 					audio_play_sound(sndDie, 10, false);
-					sidequest_open = false; // Auto close on fail to show the consequence!
+					
+					// Handle French Air strike damage immediately
+					if (debuff_type == "french_air_strike") {
+						with (oPar_PlayerUnit) {
+							CurHp = max(1, floor(CurHp * 0.6)); // Deal 40% current HP damage (leaves at least 1 HP)
+							effect_create_above(ef_explosion, x, y, 0.5, c_red);
+						}
+						screen_shake = 20; // violent camera rumble!
+					}
+					
+					sidequest_open = false; // Auto close on fail so players immediately face the punishment!
 				}
 			}
 		}
 		
-		// Back to Menu button
+		// Back to Chapter question selection
 		var back_w = 180;
 		var back_h = 45;
 		var back_x = box_x + (box_w - back_w) / 2;
-		var back_y = box_y + box_h - 70;
-		
+		var back_y = box_y + box_h - 65;
 		var back_hover = (mx >= back_x && mx <= back_x + back_w && my >= back_y && my <= back_y + back_h);
 		if (back_hover && mouse_check_button_pressed(mb_left)) {
 			sidequest_current_question = -1;
@@ -175,7 +304,15 @@ if (debuff_active) {
 		debuff_active = false;
 		debuff_type = "";
 	}
+	
+	// Apply continuous screen shake for extreme_storm_mines
+	if (debuff_type == "extreme_storm_mines") {
+		if (screen_shake < 6) screen_shake = 6;
+	}
 }
+
+// Update invincible timer
+if (invincible_timer > 0) invincible_timer--;
 
 // Update Weather Timer & State
 weather_timer++;
@@ -233,7 +370,9 @@ if (weather_state > 0) {
 
 // 2. Calculate movement speeds based on weather and debuffs
 var enemy_speed_mult = 1.0;
-if (debuff_active && debuff_type == "enemy_rage") {
+if (debuff_active && debuff_type == "french_counter_attack") {
+	enemy_speed_mult = 2.0; // 100% speed increase!
+} else if (debuff_active && debuff_type == "enemy_rage") {
 	enemy_speed_mult = 1.5;
 }
 var weather_slow_mult = (weather_state == 2) ? 0.5 : ((weather_state == 1) ? 0.7 : 1.0);
@@ -245,17 +384,19 @@ with (oPar_Enemy) {
 	Spd = base_spd * weather_slow_mult * enemy_speed_mult;
 }
 
-// Player slow multiplier
+// Player slow and upgrade multiplier
 var player_slow_mult = 1.0;
-if (debuff_active && debuff_type == "mud_slow") {
-	player_slow_mult = 0.5;
+if (debuff_active) {
+	if (debuff_type == "mud_slow") player_slow_mult = 0.5;
+	else if (debuff_type == "extreme_storm_mines") player_slow_mult = 0.3; // -70% slow!
 }
+var ch3_speed_mult = chapter_upgrade_stats ? 1.5 : 1.0; // +50% speed increase!
 
 with (oPar_PlayerUnit) {
 	if (!variable_instance_exists(self, "base_spd")) {
 		base_spd = Spd;
 	}
-	Spd = base_spd * player_slow_mult;
+	Spd = base_spd * player_slow_mult * ch3_speed_mult;
 }
 
 // Process Katyusha Rocket Strikes over time (salvo queue)
@@ -293,8 +434,82 @@ if (keyboard_check_pressed(vk_escape) || mouse_check_button_pressed(mb_right)) {
 	}
 }
 
-// Toggle Air Strike (Q key) - locked until sidequest cleared
-if (keyboard_check_pressed(ord("Q")) && skill_q_unlocked) {
+// --- 1.7. TAB Key Hero Cycling ---
+if (keyboard_check_pressed(vk_tab)) {
+	var selected_heroes = [];
+	with (oPar_PlayerUnit) {
+		if (Selected && variable_instance_exists(self, "IsHero") && IsHero) {
+			array_push(selected_heroes, id);
+		}
+	}
+	
+	var hero_count = array_length(selected_heroes);
+	if (hero_count > 1) {
+		var current_idx = -1;
+		for (var i = 0; i < hero_count; i++) {
+			if (selected_heroes[i] == focused_hero) {
+				current_idx = i;
+				break;
+			}
+		}
+		
+		var next_idx = (current_idx + 1) % hero_count;
+		focused_hero = selected_heroes[next_idx];
+		audio_play_sound(sndConvert, 10, false);
+	}
+}
+
+// Keep focused_hero validated and selected
+var heroes_list = [];
+with (oPar_PlayerUnit) {
+	if (Selected && variable_instance_exists(self, "IsHero") && IsHero) {
+		array_push(heroes_list, id);
+	}
+}
+if (array_length(heroes_list) > 0) {
+	var found = false;
+	for (var i = 0; i < array_length(heroes_list); i++) {
+		if (heroes_list[i] == focused_hero) {
+			found = true;
+			break;
+		}
+	}
+	if (!found) {
+		focused_hero = heroes_list[0];
+	}
+} else {
+	focused_hero = noone;
+}
+
+// Q, W, E keys activate currently focused Hero's skills 1, 2, 3
+if (focused_hero != noone && instance_exists(focused_hero)) {
+	if (keyboard_check_pressed(ord("Q"))) {
+		with (focused_hero) event_user(1); // Skill 1
+	}
+	if (keyboard_check_pressed(ord("W"))) {
+		with (focused_hero) event_user(2); // Skill 2
+	}
+	if (keyboard_check_pressed(ord("E"))) {
+		with (focused_hero) event_user(3); // Skill 3
+	}
+} else {
+	if (keyboard_check_pressed(ord("Q")) || keyboard_check_pressed(ord("W")) || keyboard_check_pressed(ord("E"))) {
+		if (skill_q_unlocked || skill_e_unlocked) {
+			audio_play_sound(sndDie, 10, false);
+			if (instance_exists(oCamera)) {
+				var txt = instance_create_layer(oCamera.x, oCamera.y - 40, "Instances", oFx_ConvertText);
+				if (txt != noone) {
+					txt.Parent = noone;
+					txt.Text = "HÃY CHỌN TƯỚNG ANH HÙNG TRƯỚC!";
+					txt.life_timer = 90;
+				}
+			}
+		}
+	}
+}
+
+// Toggle Air Strike (R key) - locked until Chapter 1 cleared
+if (keyboard_check_pressed(ord("R")) && skill_q_unlocked) {
 	if (bomb_cooldown == 0) {
 		if (targeting_mode == 1) {
 			targeting_mode = 0;
@@ -307,8 +522,8 @@ if (keyboard_check_pressed(ord("Q")) && skill_q_unlocked) {
 	}
 }
 
-// Toggle AA Flak Barrage (W key) - locked until sidequest cleared
-if (keyboard_check_pressed(ord("W")) && skill_w_unlocked) {
+// Toggle AA Flak Barrage (T key) - locked until Chapter 1 cleared
+if (keyboard_check_pressed(ord("T")) && skill_w_unlocked) {
 	if (w_cooldown == 0) {
 		if (targeting_mode == 2) {
 			targeting_mode = 0;
@@ -321,8 +536,8 @@ if (keyboard_check_pressed(ord("W")) && skill_w_unlocked) {
 	}
 }
 
-// Toggle Katyusha Rocket Strike (E key) - locked until sidequest cleared
-if (keyboard_check_pressed(ord("E")) && skill_e_unlocked) {
+// Toggle Katyusha Rocket Strike (Y key) - locked until Chapter 2 cleared
+if (keyboard_check_pressed(ord("Y")) && skill_e_unlocked) {
 	if (e_cooldown == 0) {
 		if (targeting_mode == 3) {
 			targeting_mode = 0;
@@ -335,8 +550,8 @@ if (keyboard_check_pressed(ord("E")) && skill_e_unlocked) {
 	}
 }
 
-// Toggle Giant A1 TNT Charge (R key) - locked until sidequest cleared
-if (keyboard_check_pressed(ord("R")) && skill_r_unlocked) {
+// Toggle Giant A1 TNT Charge (U key) - locked until Chapter 3 cleared
+if (keyboard_check_pressed(ord("U")) && skill_r_unlocked) {
 	if (r_cooldown == 0) {
 		if (targeting_mode == 4) {
 			targeting_mode = 0;
