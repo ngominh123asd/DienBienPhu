@@ -29,6 +29,47 @@ r_max_cooldown = 5400; // 90 seconds (5400 frames)
 targeting_active = false; // Legacy (for Q aiming)
 targeting_mode = 0; // 0: None, 1: Q, 2: W, 3: E, 4: R
 
+// 1.5. Sidequest & Historical Challenge (Q, W, E, R locks & debuffs)
+sidequest_open = false;
+sidequest_current_question = -1; // -1 for main selection, 0-3 for Q,W,E,R challenges
+
+skill_q_unlocked = false;
+skill_w_unlocked = false;
+skill_e_unlocked = false;
+skill_r_unlocked = false;
+
+question_status = [-1, -1, -1, -1]; // -1: Not started, 0: Failed (Got debuff, can retry), 1: Cleared (Unlocked)
+
+// Debuff penalty system
+debuff_active = false;
+debuff_timer = 0;
+debuff_type = ""; // "radar_jam", "mud_slow", "ammo_shortage", "enemy_rage"
+
+// Historical questions struct array
+sidequest_questions = [
+    {
+        q: "Ai là Tổng Tư lệnh kiêm Bí thư Đảng ủy chỉ huy chiến dịch Điện Biên Phủ?",
+        a: ["A. Tướng Văn Tiến Dũng", "B. Đại tướng Võ Nguyên Giáp", "C. Tướng Nguyễn Chí Thanh", "D. Tướng Hoàng Văn Thái"],
+        correct: 1
+    },
+    {
+        q: "Người anh hùng nào đã lấy thân mình lấp lỗ châu mai trong trận Him Lam?",
+        a: ["A. Phan Đình Giót", "B. Tô Vĩnh Diện", "C. Bế Văn Đàn", "D. Trần Can"],
+        correct: 0
+    },
+    {
+        q: "Ai là người anh hùng đã dũng cảm lấy thân mình chèn bánh pháo để cứu pháo?",
+        a: ["A. Bế Văn Đàn", "B. Phan Đình Giót", "C. Tô Vĩnh Diện", "D. La Văn Cầu"],
+        correct: 2
+    },
+    {
+        q: "Quả bộc phá 930kg nổ tại đồi A1 vào đêm ngày nào để mở đường cho ta tổng tiến công?",
+        a: ["A. Đêm 06/05/1954", "B. Đêm 07/05/1954", "C. Đêm 05/05/1954", "D. Đêm 01/05/1954"],
+        correct: 0
+    }
+];
+
+
 // Salvo queues
 katyusha_queue = [];
 

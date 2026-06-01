@@ -86,7 +86,14 @@ if (_hasEnemy || _hasLocot) {
 	// Attack when in range
 	if distance_to_object(NearestEnemy) < AttackDist {
 		
-		if CanAttack {
+		var ammo_debuff = false;
+		if (instance_exists(oCont_Room)) {
+			if (oCont_Room.debuff_active && oCont_Room.debuff_type == "ammo_shortage") {
+				ammo_debuff = true;
+			}
+		}
+		
+		if (CanAttack && !ammo_debuff) {
 			event_user(0);
 		}
 		

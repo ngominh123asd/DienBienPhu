@@ -22,6 +22,121 @@ var my = device_mouse_y_to_gui(0);
 
 var mouse_over_minimap = (mx >= map_x && mx <= map_x + minimap_w && my >= map_y && my <= map_y + minimap_h);
 
+// Disable minimap hover if radar is jammed
+if (debuff_active && debuff_type == "radar_jam") {
+	mouse_over_minimap = false;
+}
+
+// Check sidequest button click
+var sq_btn_x = map_x + minimap_w + 15;
+var sq_btn_y = map_y;
+var sq_btn_w = 150;
+var sq_btn_h = 40;
+var mouse_over_sq_btn = (mx >= sq_btn_x && mx <= sq_btn_x + sq_btn_w && my >= sq_btn_y && my <= sq_btn_y + sq_btn_h);
+
+if (mouse_over_sq_btn && !sidequest_open) {
+	CanClick = 0;
+	if (mouse_check_button_pressed(mb_left)) {
+		sidequest_open = true;
+		sidequest_current_question = -1; // Reset to selection menu
+		audio_play_sound(sndConvert, 10, false);
+	}
+}
+
+// Main Sidequest Event Handling
+if (sidequest_open) {
+	CanClick = 0;
+	
+	var box_x = 240; 
+	var box_y = 100; 
+	var box_w = 800; 
+	var box_h = 520;
+	
+	if (sidequest_current_question == -1) {
+		// Selection Menu Click Handling
+		for (var i = 0; i < 4; i++) {
+			var btn_w = 700;
+			var btn_h = 65;
+			var btn_x = box_x + (box_w - btn_w) / 2;
+			var btn_y = box_y + 110 + i * 80;
+			
+			var hover = (mx >= btn_x && mx <= btn_x + btn_w && my >= btn_y && my <= btn_y + btn_h);
+			if (hover && mouse_check_button_pressed(mb_left)) {
+				if (question_status[i] == 1) {
+					audio_play_sound(sndLevelUp, 10, false);
+				} else {
+					sidequest_current_question = i;
+					audio_play_sound(sndConvert, 10, false);
+				}
+			}
+		}
+		
+		// Close button at bottom of Menu
+		var close_w = 180;
+		var close_h = 45;
+		var close_x = box_x + (box_w - close_w) / 2;
+		var close_y = box_y + box_h - 70;
+		
+		var close_hover = (mx >= close_x && mx <= close_x + close_w && my >= close_y && my <= close_y + close_h);
+		if (close_hover && mouse_check_button_pressed(mb_left)) {
+			sidequest_open = false;
+			audio_play_sound(sndConvert, 10, false);
+		}
+	} else {
+		// Question Click Handling
+		var q_idx = sidequest_current_question;
+		var q_data = sidequest_questions[q_idx];
+		
+		// 4 Multiple Choice buttons
+		for (var i = 0; i < 4; i++) {
+			var opt_w = 340;
+			var opt_h = 80;
+			var opt_x = box_x + 40 + (i % 2) * 380;
+			var opt_y = box_y + 220 + floor(i / 2) * 110;
+			
+			var hover = (mx >= opt_x && mx <= opt_x + opt_w && my >= opt_y && my <= opt_y + opt_h);
+			if (hover && mouse_check_button_pressed(mb_left)) {
+				if (i == q_data.correct) {
+					// Correct!
+					question_status[q_idx] = 1;
+					if (q_idx == 0) skill_q_unlocked = true;
+					if (q_idx == 1) skill_w_unlocked = true;
+					if (q_idx == 2) skill_e_unlocked = true;
+					if (q_idx == 3) skill_r_unlocked = true;
+					
+					audio_play_sound(sndLevelUp, 10, false);
+					sidequest_current_question = -1; // Return to selection menu
+				} else {
+					// Incorrect!
+					question_status[q_idx] = 0;
+					
+					// Trigger random debuff
+					debuff_active = true;
+					debuff_timer = 900; // 15 seconds
+					debuff_type = choose("radar_jam", "mud_slow", "ammo_shortage", "enemy_rage");
+					
+					audio_play_sound(sndDie, 10, false);
+					sidequest_open = false; // Auto close on fail to show the consequence!
+				}
+			}
+		}
+		
+		// Back to Menu button
+		var back_w = 180;
+		var back_h = 45;
+		var back_x = box_x + (box_w - back_w) / 2;
+		var back_y = box_y + box_h - 70;
+		
+		var back_hover = (mx >= back_x && mx <= back_x + back_w && my >= back_y && my <= back_y + back_h);
+		if (back_hover && mouse_check_button_pressed(mb_left)) {
+			sidequest_current_question = -1;
+			audio_play_sound(sndConvert, 10, false);
+		}
+	}
+	
+	exit; // Bypasses standard movement/clicks completely!
+}
+
 if (mouse_over_minimap) {
 	CanClick = 0;
 	if (mouse_check_button(mb_left)) {
@@ -52,6 +167,15 @@ if (w_cooldown > 0) w_cooldown--;
 if (e_cooldown > 0) e_cooldown--;
 if (r_cooldown > 0) r_cooldown--;
 if (screen_shake > 0) screen_shake -= 0.5;
+
+// Update active penalty debuff timer
+if (debuff_active) {
+	debuff_timer--;
+	if (debuff_timer <= 0) {
+		debuff_active = false;
+		debuff_type = "";
+	}
+}
 
 // Update Weather Timer & State
 weather_timer++;
@@ -88,9 +212,8 @@ if (weather_state == 2) {
 	lightning_alpha = 0;
 }
 
-// Update rain particle positions & slow down enemies
+// 1. Update rain particle positions
 if (weather_state > 0) {
-	// Rain falls 2.2x faster and is much more slanted during severe Storm
 	var speed_mult = (weather_state == 2) ? 2.2 : 1.0;
 	
 	for (var i = 0; i < array_length(rain_drops); i++) {
@@ -106,22 +229,33 @@ if (weather_state > 0) {
 			drop.y = irandom(720);
 		}
 	}
-	
-	// Apply movement slow debuff to all enemies based on mud/storm severity
-	var slow_mult = (weather_state == 2) ? 0.5 : 0.7; // 50% slow in Storm, 30% in Rain
-	with (oPar_Enemy) {
-		if (!variable_instance_exists(self, "base_spd")) {
-			base_spd = Spd;
-		}
-		Spd = base_spd * slow_mult;
+}
+
+// 2. Calculate movement speeds based on weather and debuffs
+var enemy_speed_mult = 1.0;
+if (debuff_active && debuff_type == "enemy_rage") {
+	enemy_speed_mult = 1.5;
+}
+var weather_slow_mult = (weather_state == 2) ? 0.5 : ((weather_state == 1) ? 0.7 : 1.0);
+
+with (oPar_Enemy) {
+	if (!variable_instance_exists(self, "base_spd")) {
+		base_spd = Spd;
 	}
-} else {
-	// Restore normal speed when sunny
-	with (oPar_Enemy) {
-		if (variable_instance_exists(self, "base_spd")) {
-			Spd = base_spd;
-		}
+	Spd = base_spd * weather_slow_mult * enemy_speed_mult;
+}
+
+// Player slow multiplier
+var player_slow_mult = 1.0;
+if (debuff_active && debuff_type == "mud_slow") {
+	player_slow_mult = 0.5;
+}
+
+with (oPar_PlayerUnit) {
+	if (!variable_instance_exists(self, "base_spd")) {
+		base_spd = Spd;
 	}
+	Spd = base_spd * player_slow_mult;
 }
 
 // Process Katyusha Rocket Strikes over time (salvo queue)
@@ -159,8 +293,8 @@ if (keyboard_check_pressed(vk_escape) || mouse_check_button_pressed(mb_right)) {
 	}
 }
 
-// Toggle Air Strike (Q key)
-if (keyboard_check_pressed(ord("Q"))) {
+// Toggle Air Strike (Q key) - locked until sidequest cleared
+if (keyboard_check_pressed(ord("Q")) && skill_q_unlocked) {
 	if (bomb_cooldown == 0) {
 		if (targeting_mode == 1) {
 			targeting_mode = 0;
@@ -173,8 +307,8 @@ if (keyboard_check_pressed(ord("Q"))) {
 	}
 }
 
-// Toggle AA Flak Barrage (W key)
-if (keyboard_check_pressed(ord("W"))) {
+// Toggle AA Flak Barrage (W key) - locked until sidequest cleared
+if (keyboard_check_pressed(ord("W")) && skill_w_unlocked) {
 	if (w_cooldown == 0) {
 		if (targeting_mode == 2) {
 			targeting_mode = 0;
@@ -187,8 +321,8 @@ if (keyboard_check_pressed(ord("W"))) {
 	}
 }
 
-// Toggle Katyusha Rocket Strike (E key)
-if (keyboard_check_pressed(ord("E"))) {
+// Toggle Katyusha Rocket Strike (E key) - locked until sidequest cleared
+if (keyboard_check_pressed(ord("E")) && skill_e_unlocked) {
 	if (e_cooldown == 0) {
 		if (targeting_mode == 3) {
 			targeting_mode = 0;
@@ -201,8 +335,8 @@ if (keyboard_check_pressed(ord("E"))) {
 	}
 }
 
-// Toggle Giant A1 TNT Charge (R key)
-if (keyboard_check_pressed(ord("R"))) {
+// Toggle Giant A1 TNT Charge (R key) - locked until sidequest cleared
+if (keyboard_check_pressed(ord("R")) && skill_r_unlocked) {
 	if (r_cooldown == 0) {
 		if (targeting_mode == 4) {
 			targeting_mode = 0;
