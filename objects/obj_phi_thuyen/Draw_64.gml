@@ -133,10 +133,10 @@ if (won) {
             
             var warning_pulse = 0.6 + abs(sin(current_time * 0.007)) * 0.4;
             draw_set_color(c_black);
-            draw_text_ext_transformed(640 + 2, 250 + 2, "► ĐANG TRUYỀN TIN TỪ PHÒNG LÁI ◄", 24, 1100, 1.8, 1.8, 0);
+            draw_text_ext_transformed(640 + 2, 250 + 2, ">> ĐANG TRUYỀN TIN TỪ PHÒNG LÁI <<", 24, 1100, 1.5, 1.5, 0);
             draw_set_color(make_color_rgb(255, 140, 0)); // orange glow
             draw_set_alpha(warning_pulse);
-            draw_text_ext_transformed(640, 250, "► ĐANG TRUYỀN TIN TỪ PHÒNG LÁI ◄", 24, 1100, 1.8, 1.8, 0);
+            draw_text_ext_transformed(640, 250, ">> ĐANG TRUYỀN TIN TỪ PHÒNG LÁI <<", 24, 1100, 1.5, 1.5, 0);
             
             draw_set_alpha(1.0);
             draw_set_color(c_white);
@@ -172,7 +172,7 @@ if (won) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_middle);
         draw_set_color(make_color_rgb(255, 90, 90));
-        draw_text_transformed(box_x1 + 45, box_y1 + 22, "● TRUYỀN TIN KHẨN CẤP / VŨ XUÂN THIỀU", 0.85, 0.85, 0);
+        draw_text(box_x1 + 45, box_y1 + 22, "● TRUYỀN TIN KHẨN CẤP / VŨ XUÂN THIỀU");
         
         // Animated Green Soundwave Visualizer
         var wave_x = box_x2 - 100;
@@ -207,18 +207,18 @@ if (won) {
         if (monologue_char_count < text_len) {
             if (blink) {
                 draw_set_color(c_gray);
-                draw_text_transformed(box_x2 - 30, box_y2 - 12, "Ấn SPACE để xem nhanh >>", 0.75, 0.75, 0);
+                draw_text(box_x2 - 30, box_y2 - 12, "Ấn SPACE để xem nhanh >>");
             }
         } else {
             if (monologue_index < array_length(monologue_texts) - 1) {
                 if (blink) {
                     draw_set_color(c_yellow);
-                    draw_text_transformed(box_x2 - 30, box_y2 - 12, "Ấn SPACE hoặc ENTER để tiếp tục ➔", 0.8, 0.8, 0);
+                    draw_text(box_x2 - 30, box_y2 - 12, "Ấn SPACE hoặc ENTER để tiếp tục ->");
                 }
             } else {
                 if (blink) {
                     draw_set_color(c_orange);
-                    draw_text_transformed(box_x2 - 30, box_y2 - 12, "[ Độc thoại hoàn tất - SẴN SÀNG QUYẾT TỬ ]", 0.8, 0.8, 0);
+                    draw_text(box_x2 - 30, box_y2 - 12, "[ Độc thoại hoàn tất - SẴN SÀNG QUYẾT TỬ ]");
                 }
             }
         }
@@ -361,7 +361,7 @@ if (won) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_middle);
         draw_set_color(is_pilot ? make_color_rgb(255, 180, 80) : make_color_rgb(100, 255, 100));
-        draw_text_transformed(box_x1 + 45, box_y1 + 22, sender_title, 0.85, 0.85, 0);
+        draw_text(box_x1 + 45, box_y1 + 22, sender_title);
         
         // Animated soundwave visualizer
         var wave_x = box_x2 - 100;
@@ -389,7 +389,7 @@ if (won) {
         draw_set_valign(fa_bottom);
         if (blink) {
             draw_set_color(c_yellow);
-            draw_text_transformed(box_x2 - 30, box_y2 - 12, "Ấn SPACE hoặc ENTER để tiếp tục ➔", 0.8, 0.8, 0);
+            draw_text(box_x2 - 30, box_y2 - 12, "Ấn SPACE hoặc ENTER để tiếp tục ->");
         }
         
         // Reset settings
