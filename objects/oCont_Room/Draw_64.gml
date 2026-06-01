@@ -146,7 +146,7 @@ if (!(debuff_active && debuff_type == "radar_jam")) {
 	
 	var warning_pulse = 0.5 + sin(current_time * 0.015) * 0.5;
 	draw_set_color(merge_color(c_red, c_yellow, warning_pulse));
-	draw_text_transformed(map_x + minimap_w/2, map_y + minimap_h/2, "⚠ MẤT TÍN HIỆU ⚠\nRADAR BỊ NHIỄU", 0.65, 0.65, 0);
+	draw_text_transformed(map_x + minimap_w/2, map_y + minimap_h/2, "⚠ MẤT TÍN HIỆU ⚠\nRADAR BỊ NHIỄU", 1.0, 1.0, 0);
 	draw_set_alpha(1.0);
 }
 
@@ -190,10 +190,10 @@ draw_set_valign(fa_middle);
 
 if (all_cleared) {
 	draw_set_color(make_color_rgb(50, 220, 100));
-	draw_text_transformed(sq_btn_x + sq_btn_w/2, sq_btn_y + sq_btn_h/2, "✓ HOÀN THÀNH", 0.6, 0.6, 0);
+	draw_text_transformed(sq_btn_x + sq_btn_w/2, sq_btn_y + sq_btn_h/2, "✓ HOÀN THÀNH", 1.0, 1.0, 0);
 } else {
 	draw_set_color(c_yellow);
-	draw_text_transformed(sq_btn_x + sq_btn_w/2, sq_btn_y + sq_btn_h/2, "NHIỆM VỤ PHỤ", 0.6, 0.6, 0);
+	draw_text_transformed(sq_btn_x + sq_btn_w/2, sq_btn_y + sq_btn_h/2, "NHIỆM VỤ PHỤ", 1.0, 1.0, 0);
 }
 
 // Reset draw settings
@@ -257,13 +257,13 @@ if (skill_q_unlocked && bomb_cooldown > 0) {
 draw_set_alpha(1.0);
 if (!skill_q_unlocked) {
     draw_set_color(c_gray);
-    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÓA\n(Sidequest)", 1.0, 1.0, 0);
 } else if (bomb_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "COOLDOWN\n" + string(ceil(bomb_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "COOLDOWN\n" + string(ceil(bomb_cooldown / 60)) + "s", 1.0, 1.0, 0);
 } else {
     draw_set_color(targeting_mode == 1 ? c_yellow : c_white);
-    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÔNG KÍCH\nPHÍM R", 0.65, 0.65, 0);
+    draw_text_transformed((q_x1 + q_x2)/2, (q_y1 + q_y2)/2, "KHÔNG KÍCH\nPHÍM R", 1.0, 1.0, 0);
 }
 
 if (skill_q_unlocked && targeting_mode == 1) {
@@ -313,13 +313,13 @@ if (skill_w_unlocked && w_cooldown > 0) {
 draw_set_alpha(1.0);
 if (!skill_w_unlocked) {
     draw_set_color(c_gray);
-    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "KHÓA\n(Sidequest)", 1.0, 1.0, 0);
 } else if (w_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "COOLDOWN\n" + string(ceil(w_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "COOLDOWN\n" + string(ceil(w_cooldown / 60)) + "s", 1.0, 1.0, 0);
 } else {
     draw_set_color(targeting_mode == 2 ? c_yellow : c_white);
-    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "PHÒNG KHÔNG\nPHÍM T", 0.65, 0.65, 0);
+    draw_text_transformed((w_x1 + w_x2)/2, (w_y1 + w_y2)/2, "PHÒNG KHÔNG\nPHÍM T", 1.0, 1.0, 0);
 }
 
 if (skill_w_unlocked && targeting_mode == 2) {
@@ -369,13 +369,13 @@ if (skill_e_unlocked && e_cooldown > 0) {
 draw_set_alpha(1.0);
 if (!skill_e_unlocked) {
     draw_set_color(c_gray);
-    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "KHÓA\n(Sidequest)", 1.0, 1.0, 0);
 } else if (e_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "COOLDOWN\n" + string(ceil(e_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "COOLDOWN\n" + string(ceil(e_cooldown / 60)) + "s", 1.0, 1.0, 0);
 } else {
     draw_set_color(targeting_mode == 3 ? c_yellow : c_white);
-    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "HỎA TIỄN H6\nPHÍM Y", 0.65, 0.65, 0);
+    draw_text_transformed((e_x1 + e_x2)/2, (e_y1 + e_y2)/2, "HỎA TIỄN H6\nPHÍM Y", 1.0, 1.0, 0);
 }
 
 if (skill_e_unlocked && targeting_mode == 3) {
@@ -425,13 +425,13 @@ if (skill_r_unlocked && r_cooldown > 0) {
 draw_set_alpha(1.0);
 if (!skill_r_unlocked) {
     draw_set_color(c_gray);
-    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "KHÓA\n(Sidequest)", 0.65, 0.65, 0);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "KHÓA\n(Sidequest)", 1.0, 1.0, 0);
 } else if (r_cooldown > 0) {
     draw_set_color(c_white);
-    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "COOLDOWN\n" + string(ceil(r_cooldown / 60)) + "s", 0.65, 0.65, 0);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "COOLDOWN\n" + string(ceil(r_cooldown / 60)) + "s", 1.0, 1.0, 0);
 } else {
     draw_set_color(targeting_mode == 4 ? c_yellow : c_white);
-    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "BỘC PHÁ A1\nPHÍM U", 0.65, 0.65, 0);
+    draw_text_transformed((r_x1 + r_x2)/2, (r_y1 + r_y2)/2, "BỘC PHÁ A1\nPHÍM U", 1.0, 1.0, 0);
 }
 
 if (skill_r_unlocked && targeting_mode == 4) {
@@ -589,7 +589,7 @@ if (debuff_active) {
     }
     
     draw_set_color(c_yellow);
-    draw_text_transformed(db_x + db_w/2, db_y + 16, db_title + " (" + string(ceil(debuff_timer / 60)) + "s)", 0.65, 0.65, 0);
+    draw_text_transformed(db_x + db_w/2, db_y + 16, db_title + " (" + string(ceil(debuff_timer / 60)) + "s)", 1.0, 1.0, 0);
     draw_set_color(c_white);
     draw_text_ext_transformed(db_x + db_w/2, db_y + 38, db_desc, 22, 280, 1.0, 1.0, 0);
     
@@ -631,10 +631,10 @@ if (sidequest_open) {
     if (sidequest_current_chapter == -1) {
         // --- TẦNG 1: MENU CHỌN 3 CHƯƠNG CHIẾN DỊCH ---
         draw_set_color(c_yellow);
-        draw_text_transformed(box_x + box_w/2, box_y + 35, "★ HÀNH TRÌNH LỊCH SỬ ĐIỆN BIÊN PHỦ ★", 1.1, 1.1, 0);
+        draw_text_transformed(box_x + box_w/2, box_y + 35, "★ HÀNH TRÌNH LỊCH SỬ ĐIỆN BIÊN PHỦ ★", 1.0, 1.0, 0);
         
         draw_set_color(c_white);
-        draw_text_transformed(box_x + box_w/2, box_y + 65, "Trả lời các câu hỏi lịch sử tương ứng với 3 đợt tiến công của chiến dịch.\nHoàn thành chương để mở khóa các kỹ năng chiến thuật và tướng quân tối thượng!", 0.65, 0.65, 0);
+        draw_text_transformed(box_x + box_w/2, box_y + 65, "Trả lời các câu hỏi lịch sử tương ứng với 3 đợt tiến công của chiến dịch.\nHoàn thành chương để mở khóa các kỹ năng chiến thuật và tướng quân tối thượng!", 1.0, 1.0, 0);
         
         for (var i = 0; i < 3; i++) {
             var ch_w = 720;
@@ -669,13 +669,13 @@ if (sidequest_open) {
             // Draw text
             draw_set_color(c_yellow);
             draw_set_halign(fa_left);
-            draw_text_transformed(ch_x + 20, ch_y + 20, sidequest_chapters[i].name, 0.75, 0.75, 0);
+            draw_text_transformed(ch_x + 20, ch_y + 20, sidequest_chapters[i].name, 1.0, 1.0, 0);
             
             draw_set_color(c_white);
-            draw_text_transformed(ch_x + 20, ch_y + 45, sidequest_chapters[i].sub, 0.55, 0.55, 0);
+            draw_text_transformed(ch_x + 20, ch_y + 45, sidequest_chapters[i].sub, 1.0, 1.0, 0);
             
             draw_set_color(make_color_rgb(200, 200, 200));
-            draw_text_transformed(ch_x + 20, ch_y + 68, "Thưởng: " + sidequest_chapters[i].reward_txt, 0.5, 0.5, 0);
+            draw_text_transformed(ch_x + 20, ch_y + 68, "Thưởng: " + sidequest_chapters[i].reward_txt, 1.0, 1.0, 0);
             
             // Draw progress status
             var status_text = "";
@@ -690,7 +690,7 @@ if (sidequest_open) {
             
             draw_set_color(status_col);
             draw_set_halign(fa_right);
-            draw_text_transformed(ch_x + ch_w - 20, ch_y + ch_h/2, status_text, 0.7, 0.7, 0);
+            draw_text_transformed(ch_x + ch_w - 20, ch_y + ch_h/2, status_text, 1.0, 1.0, 0);
         }
         
         // Draw Close button
@@ -714,7 +714,7 @@ if (sidequest_open) {
         draw_rectangle(close_x, close_y, close_x + close_w, close_y + close_h, true);
         
         draw_set_halign(fa_center);
-        draw_text_transformed(close_x + close_w/2, close_y + close_h/2, "ĐÓNG GIAO DIỆN", 0.75, 0.75, 0);
+        draw_text_transformed(close_x + close_w/2, close_y + close_h/2, "ĐÓNG GIAO DIỆN", 1.0, 1.0, 0);
     } 
     else if (sidequest_current_question == -1) {
         // --- TẦNG 2: MENU CHỌN CÂU HỎI TRONG CHƯƠNG ---
@@ -724,7 +724,7 @@ if (sidequest_open) {
         draw_text_transformed(box_x + box_w/2, box_y + 35, sidequest_chapters[ch_idx].name, 1.0, 1.0, 0);
         
         draw_set_color(c_white);
-        draw_text_transformed(box_x + box_w/2, box_y + 65, sidequest_chapters[ch_idx].sub, 0.65, 0.65, 0);
+        draw_text_transformed(box_x + box_w/2, box_y + 65, sidequest_chapters[ch_idx].sub, 1.0, 1.0, 0);
         
         for (var i = 0; i < 3; i++) {
             var btn_w = 700;
@@ -754,7 +754,7 @@ if (sidequest_open) {
             // Draw Question index
             draw_set_color(c_white);
             draw_set_halign(fa_left);
-            draw_text_transformed(btn_x + 25, btn_y + btn_h/2, "Giải mã mật lệnh " + string(i + 1), 0.75, 0.75, 0);
+            draw_text_transformed(btn_x + 25, btn_y + btn_h/2, "Giải mã mật lệnh " + string(i + 1), 1.0, 1.0, 0);
             
             // Draw status
             var status_text = "";
@@ -772,7 +772,7 @@ if (sidequest_open) {
             
             draw_set_color(status_col);
             draw_set_halign(fa_right);
-            draw_text_transformed(btn_x + btn_w - 25, btn_y + btn_h/2, status_text, 0.7, 0.7, 0);
+            draw_text_transformed(btn_x + btn_w - 25, btn_y + btn_h/2, status_text, 1.0, 1.0, 0);
         }
         
         // Back to Chapter List button
@@ -796,7 +796,7 @@ if (sidequest_open) {
         draw_rectangle(back_x, back_y, back_x + back_w, back_y + back_h, true);
         
         draw_set_halign(fa_center);
-        draw_text_transformed(back_x + back_w/2, back_y + back_h/2, "QUAY LẠI", 0.75, 0.75, 0);
+        draw_text_transformed(back_x + back_w/2, back_y + back_h/2, "QUAY LẠI", 1.0, 1.0, 0);
     } 
     else {
         // --- TẦNG 3: TRẢ LỜI CÂU HỎI TRẮC NGHIỆM ---
@@ -861,7 +861,7 @@ if (sidequest_open) {
         draw_rectangle(back_x, back_y, back_x + back_w, back_y + back_h, true);
         
         draw_set_halign(fa_center);
-        draw_text_transformed(back_x + back_w/2, back_y + back_h/2, "QUAY LẠI CƠ BẢN", 0.75, 0.75, 0);
+        draw_text_transformed(back_x + back_w/2, back_y + back_h/2, "QUAY LẠI CƠ BẢN", 1.0, 1.0, 0);
     }
     
     // Reset draw settings
@@ -891,7 +891,7 @@ if (focused_hero != noone && instance_exists(focused_hero)) {
     draw_set_valign(fa_middle);
     
     draw_set_color(c_yellow);
-    draw_text_transformed(p_x + 15, p_y + 22, "★ " + focused_hero.Name, 0.85, 0.85, 0);
+    draw_text_transformed(p_x + 15, p_y + 22, "★ " + focused_hero.Name, 1.0, 1.0, 0);
     
     // HP Bar of Hero
     draw_set_color(c_dkgray);
@@ -903,7 +903,7 @@ if (focused_hero != noone && instance_exists(focused_hero)) {
     
     draw_set_color(c_white);
     draw_set_halign(fa_center);
-    draw_text_transformed(p_x + p_w/2, p_y + 45, string(focused_hero.CurHp) + " / " + string(focused_hero.MaxHp), 0.5, 0.5, 0);
+    draw_text_transformed(p_x + p_w/2, p_y + 45, string(focused_hero.CurHp) + " / " + string(focused_hero.MaxHp), 1.0, 1.0, 0);
     
     // Draw 3 skills
     var skill_names = [];
@@ -949,14 +949,14 @@ if (focused_hero != noone && instance_exists(focused_hero)) {
         // Text
         draw_set_color(c_white);
         draw_set_alpha(1.0);
-        draw_text_transformed(s_x, s_y - 8, skill_names[i], 0.55, 0.55, 0);
+        draw_text_transformed(s_x, s_y - 8, skill_names[i], 1.0, 1.0, 0);
         
         if (cd <= 0) {
             draw_set_color(c_yellow);
-            draw_text_transformed(s_x, s_y + 8, skill_keys[i], 0.5, 0.5, 0);
+            draw_text_transformed(s_x, s_y + 8, skill_keys[i], 1.0, 1.0, 0);
         } else {
             draw_set_color(c_orange);
-            draw_text_transformed(s_x, s_y + 8, string(ceil(cd / 60)) + "s", 0.55, 0.55, 0);
+            draw_text_transformed(s_x, s_y + 8, string(ceil(cd / 60)) + "s", 1.0, 1.0, 0);
         }
     }
     
@@ -964,7 +964,7 @@ if (focused_hero != noone && instance_exists(focused_hero)) {
     draw_set_color(c_yellow);
     draw_set_alpha(0.6 + sin(current_time * 0.01) * 0.2);
     draw_set_halign(fa_center);
-    draw_text_transformed(p_x + p_w/2, p_y + p_h - 10, "ẤN 'TAB' ĐỂ CHUYỂN ĐỔI ANH HÙNG", 0.5, 0.5, 0);
+    draw_text_transformed(p_x + p_w/2, p_y + p_h - 10, "ẤN 'TAB' ĐỂ CHUYỂN ĐỔI ANH HÙNG", 1.0, 1.0, 0);
     
     draw_set_alpha(1.0);
     draw_set_color(c_white);
