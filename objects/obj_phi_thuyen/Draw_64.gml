@@ -172,7 +172,7 @@ if (won) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_middle);
         draw_set_color(make_color_rgb(255, 90, 90));
-        draw_text_transformed(box_x1 + 45, box_y1 + 22, "● TRUYỀN TIN KHẨN CẤP / PHI CÔNG QUYẾT TỬ", 0.85, 0.85, 0);
+        draw_text_transformed(box_x1 + 45, box_y1 + 22, "● TRUYỀN TIN KHẨN CẤP / VŨ XUÂN THIỀU", 0.85, 0.85, 0);
         
         // Animated Green Soundwave Visualizer
         var wave_x = box_x2 - 100;
