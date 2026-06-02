@@ -33,10 +33,10 @@ var my = device_mouse_y_to_gui(0);
 var edge_margin = 15;   // Distance in pixels from screen border to trigger scroll
 var scroll_speed = 8;   // Smooth gliding speed
 
-MoveR = (mx >= 1280 - edge_margin);
-MoveL = (mx <= edge_margin);
-MoveD = (my >= 720 - edge_margin);
-MoveU = (my <= edge_margin);
+MoveR = (mx >= 1280 - edge_margin) || keyboard_check(vk_right);
+MoveL = (mx <= edge_margin) || keyboard_check(vk_left);
+MoveD = (my >= 720 - edge_margin) || keyboard_check(vk_down);
+MoveU = (my <= edge_margin) || keyboard_check(vk_up);
 
 DestX += (MoveR - MoveL) * scroll_speed;
 DestY += (MoveD - MoveU) * scroll_speed;
