@@ -1,4 +1,5 @@
 if (!alive) exit;
+if (variable_instance_exists(id, "state") && state != "play") exit;
 if (variable_instance_exists(id, "kamikaze_mode") && kamikaze_mode) exit;
 
 if (variable_instance_exists(id, "bullet_upgrade") && bullet_upgrade) {

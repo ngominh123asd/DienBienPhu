@@ -22,6 +22,7 @@
     {"name":"obj_locot_boss","order":8,"path":"objects/obj_locot_boss/obj_locot_boss.yy",},
     {"name":"obj_locot_player","order":12,"path":"objects/obj_locot_player/obj_locot_player.yy",},
     {"name":"obj_missile_ke_dich","order":3,"path":"objects/obj_missile_ke_dich/obj_missile_ke_dich.yy",},
+    {"name":"obj_phi_thuyen_rocket","order":5,"path":"objects/obj_phi_thuyen_rocket/obj_phi_thuyen_rocket.yy",},
     {"name":"obj_phi_thuyen","order":5,"path":"objects/obj_phi_thuyen/obj_phi_thuyen.yy",},
     {"name":"obj_strike_plane","order":11,"path":"objects/obj_strike_plane/obj_strike_plane.yy",},
     {"name":"obj_tau_san_bay","order":6,"path":"objects/obj_tau_san_bay/obj_tau_san_bay.yy",},

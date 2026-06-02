@@ -1,5 +1,7 @@
 /// @description Draw Spaceship with Immunity Flashing
 
+if (variable_instance_exists(id, "state") && state == "shop") exit;
+
 if (alive) {
     // Hide plane sprite if it has disintegrated in kamikaze collision
     if (variable_instance_exists(id, "kamikaze_exploded") && kamikaze_exploded) {
