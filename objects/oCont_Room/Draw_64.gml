@@ -156,10 +156,7 @@ if (!(debuff_active && debuff_type == "radar_jam")) {
 		var lbl_ry = z.y1 - 15; // Above the zone
 		
 		// Short display names for minimap
-		var lbl_text = "";
-		if (i == 0) lbl_text = "Him Lam";
-		else if (i == 1) lbl_text = "SB M.Thanh";
-		else if (i == 2) lbl_text = "TĐ Cứ Điểm";
+		var lbl_text = z.short_name;
 		
 		// Convert room coords to minimap coords
 		var lbl_mx = map_x + (lbl_rx / room_width) * minimap_w;

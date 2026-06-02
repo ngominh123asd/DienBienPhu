@@ -136,7 +136,7 @@ if (won) {
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
             draw_set_color(c_yellow);
-            draw_text_transformed(cx, tray_y + 65, string(item_costs[i]) + " vang", 0.85, 0.85, 0);
+            draw_text_transformed(cx, tray_y + 65, string(item_costs[i]) + " vang", 1.0, 1.0, 0);
         }
         
         // Draw Gold inside the designated Gold Bar box at (650, 640)
@@ -144,7 +144,7 @@ if (won) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(make_color_rgb(255, 230, 100)); // Bright golden text
-        draw_text_transformed(650, 640, string(gold), 1.25, 1.25, 0);
+        draw_text_transformed(650, 640, string(gold), 1.0, 1.0, 0);
         
         // Draw Detail Panel for the selected item on the right side
         var px1 = 900;
@@ -167,7 +167,7 @@ if (won) {
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
         draw_set_color(make_color_rgb(120, 255, 120));
-        draw_text_transformed((px1 + px2)/2, py1 + 20, "THONG TIN THIET BI NANG CAP", 0.85, 0.85, 0);
+        draw_text_transformed((px1 + px2)/2, py1 + 20, "THONG TIN THIET BI NANG CAP", 1.0, 1.0, 0);
         
         // Line break
         draw_set_color(make_color_rgb(80, 100, 85));
@@ -178,7 +178,7 @@ if (won) {
             
             // Name
             draw_set_color(c_white);
-            draw_text_ext_transformed((px1 + px2)/2, py1 + 65, item_names[i], 18, (px2 - px1) - 20, 1.1, 1.1, 0);
+            draw_text_ext_transformed((px1 + px2)/2, py1 + 65, item_names[i], 18, (px2 - px1) - 20, 1.0, 1.0, 0);
             
             // Image centered and scaled
             var img = part_sprites[i];
@@ -207,11 +207,11 @@ if (won) {
             else if (item_levels[i] > 0) draw_set_color(c_lime);
             else draw_set_color(c_yellow);
             
-            draw_text_transformed((px1 + px2)/2, py1 + 225, status_str, 0.85, 0.85, 0);
+            draw_text_transformed((px1 + px2)/2, py1 + 225, status_str, 1.0, 1.0, 0);
             
             // Description text
             draw_set_color(make_color_rgb(190, 210, 190));
-            draw_text_ext_transformed((px1 + px2)/2, py1 + 280, item_descs[i], 16, (px2 - px1) - 40, 0.72, 0.72, 0);
+            draw_text_ext_transformed((px1 + px2)/2, py1 + 280, item_descs[i], 16, (px2 - px1) - 40, 1.0, 1.0, 0);
             
             // --- BUY AND REFUND BUTTONS ---
             // Buy Button
@@ -243,12 +243,12 @@ if (won) {
                 draw_set_color(c_dkgray);
                 draw_rectangle(bx1_1, by1_1, bx2_1, by2_1, false);
                 draw_set_color(c_gray);
-                draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "DA MAX", 0.85, 0.85, 0);
+                draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "DA MAX", 1.0, 1.0, 0);
             } else if (i == 0 && wrench_purchased) {
                 draw_set_color(make_color_rgb(0, 80, 0));
                 draw_rectangle(bx1_1, by1_1, bx2_1, by2_1, false);
                 draw_set_color(c_lime);
-                draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "DA HOAN TAT", 0.85, 0.85, 0);
+                draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "DA HOAN TAT", 1.0, 1.0, 0);
             } else {
                 if (can_buy) {
                     if (is_buy_hover) {
@@ -258,7 +258,7 @@ if (won) {
                     }
                     draw_rectangle(bx1_1, by1_1, bx2_1, by2_1, false);
                     draw_set_color(c_white);
-                    draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "MUA (" + string(item_costs[i]) + " vang)", 0.85, 0.85, 0);
+                    draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "MUA (" + string(item_costs[i]) + " vang)", 1.0, 1.0, 0);
                     
                     if (is_buy_hover && mouse_pressed && !quiz_open) {
                         gold -= item_costs[i];
@@ -279,7 +279,7 @@ if (won) {
                     draw_set_color(c_maroon);
                     draw_rectangle(bx1_1, by1_1, bx2_1, by2_1, false);
                     draw_set_color(c_gray);
-                    draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "K.DU VANG", 0.8, 0.8, 0);
+                    draw_text_transformed((bx1_1 + bx2_1)/2, btn_y, "K.DU VANG", 1.0, 1.0, 0);
                 }
             }
             
@@ -293,7 +293,7 @@ if (won) {
                 }
                 draw_rectangle(bx1_2, by1_2, bx2_2, by2_2, false);
                 draw_set_color(c_white);
-                draw_text_transformed((bx1_2 + bx2_2)/2, btn_y, "TRA LAI (+" + string(item_costs[i]) + " V)", 0.8, 0.8, 0);
+                draw_text_transformed((bx1_2 + bx2_2)/2, btn_y, "TRA LAI (+" + string(item_costs[i]) + " V)", 1.0, 1.0, 0);
                 
                 if (is_ref_hover && mouse_pressed && !quiz_open) {
                     gold += item_costs[i];
@@ -316,7 +316,7 @@ if (won) {
                 draw_set_color(make_color_rgb(40, 40, 40));
                 draw_rectangle(bx1_2, by1_2, bx2_2, by2_2, false);
                 draw_set_color(c_gray);
-                draw_text_transformed((bx1_2 + bx2_2)/2, btn_y, "TRA LAI", 0.8, 0.8, 0);
+                draw_text_transformed((bx1_2 + bx2_2)/2, btn_y, "TRA LAI", 1.0, 1.0, 0);
             }
         }
         
@@ -338,12 +338,12 @@ if (won) {
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
             draw_set_color(make_color_rgb(180, 80, 80));
-            draw_text_ext_transformed((cbx1 + cbx2)/2, (cby1 + cby2)/2, "CAN SUA MAY BAY DE TIEP TUC", 20, (cbx2 - cbx1) - 20, 0.9, 0.9, 0);
+            draw_text_ext_transformed((cbx1 + cbx2)/2, (cby1 + cby2)/2, "CAN SUA MAY BAY DE TIEP TUC", 20, (cbx2 - cbx1) - 20, 1.0, 1.0, 0);
             
-            var warning_blink = (floor(current_time / 200) % 2 == 0);
+            var warning_blink = (floor(current_time / 600) % 2 == 0);
             if (warning_blink) {
                 draw_set_color(c_red);
-                draw_text_transformed(485, 200, "BAT BUOC MUA CO LE DE SUA MAY BAY TRUOC KHI CAT CANH!", 0.95, 0.95, 0);
+                draw_text_transformed(485, 200, "BAT BUOC MUA CO LE DE SUA MAY BAY TRUOC KHI CAT CANH!", 1.0, 1.0, 0);
             }
         } else {
             // Enabled Continue button
@@ -360,7 +360,7 @@ if (won) {
             
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text_ext_transformed((cbx1 + cbx2)/2, (cby1 + cby2)/2, "XUAT KICH (TIEP TUC)", 20, (cbx2 - cbx1) - 20, 1.05, 1.05, 0);
+            draw_text_ext_transformed((cbx1 + cbx2)/2, (cby1 + cby2)/2, "XUAT KICH (TIEP TUC)", 20, (cbx2 - cbx1) - 20, 1.0, 1.0, 0);
             
             if (is_cont_hover && mouse_pressed && !quiz_open) {
                 audio_play_sound(sndClickBut, 10, 0);
@@ -404,7 +404,7 @@ if (won) {
             
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_text_ext_transformed((dbx1 + dbx2)/2, (dby1 + dby2)/2, "GIẢI MÃ TÌNH BÁO [HOÀN THÀNH]", 20, (dbx2 - dbx1) - 20, 0.9, 0.9, 0);
+            draw_text_ext_transformed((dbx1 + dbx2)/2, (dby1 + dby2)/2, "GIẢI MÃ TÌNH BÁO [HOÀN THÀNH]", 20, (dbx2 - dbx1) - 20, 1.0, 1.0, 0);
         } else {
             // Glow yellow/gold if incomplete
             if (is_db_hover) {
@@ -461,10 +461,10 @@ if (won) {
             if (quiz_current_question == -1) {
                 // --- TẦNG 1: DANH SÁCH BÁO CÁO TÌNH BÁO ---
                 draw_set_color(c_yellow);
-                draw_text_transformed(box_x + box_w/2, box_y + 40, "★ HỒ SƠ TÌNH BÁO: ĐIỆN BIÊN PHỦ TRÊN KHÔNG ★", 1.1, 1.1, 0);
+                draw_text_transformed(box_x + box_w/2, box_y + 40, "★ HỒ SƠ TÌNH BÁO: ĐIỆN BIÊN PHỦ TRÊN KHÔNG ★", 1.0, 1.0, 0);
                 
                 draw_set_color(c_white);
-                draw_text_transformed(box_x + box_w/2, box_y + 75, "Giải mã các tài liệu mật về chiến dịch 12 ngày đêm lịch sử để nhận kinh phí chi viện.", 0.75, 0.75, 0);
+                draw_text_transformed(box_x + box_w/2, box_y + 75, "Giải mã các tài liệu mật về chiến dịch 12 ngày đêm lịch sử để nhận kinh phí chi viện.", 1.0, 1.0, 0);
                 
                 for (var i = 0; i < 5; i++) {
                     var btn_w = 700;
@@ -489,7 +489,7 @@ if (won) {
                     // Draw title
                     draw_set_color(c_white);
                     draw_set_halign(fa_left);
-                    draw_text_transformed(btn_x + 25, btn_y + btn_h/2, "Báo cáo mật số " + string(i + 1), 0.8, 0.8, 0);
+                    draw_text_transformed(btn_x + 25, btn_y + btn_h/2, "Báo cáo mật số " + string(i + 1), 1.0, 1.0, 0);
                     
                     // Draw status
                     var status_text = "";
@@ -504,7 +504,7 @@ if (won) {
                     
                     draw_set_color(status_col);
                     draw_set_halign(fa_right);
-                    draw_text_transformed(btn_x + btn_w - 25, btn_y + btn_h/2, status_text, 0.75, 0.75, 0);
+                    draw_text_transformed(btn_x + btn_w - 25, btn_y + btn_h/2, status_text, 1.0, 1.0, 0);
                     
                     if (hover && mouse_pressed) {
                         audio_play_sound(sndClickBut, 10, 0);
@@ -530,7 +530,7 @@ if (won) {
                 
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
-                draw_text_transformed(close_x + close_w/2, close_y + close_h/2, "ĐÓNG HỒ SƠ", 0.8, 0.8, 0);
+                draw_text_transformed(close_x + close_w/2, close_y + close_h/2, "ĐÓNG HỒ SƠ", 1.0, 1.0, 0);
                 
                 if (close_hover && mouse_pressed) {
                     audio_play_sound(sndClickBut, 10, 0);
@@ -548,15 +548,15 @@ if (won) {
                 // Question Text
                 draw_set_color(c_white);
                 draw_set_halign(fa_center);
-                draw_text_ext_transformed(box_x + box_w/2, box_y + 90, q_data.q, 25, 720, 0.85, 0.85, 0);
+                draw_text_ext_transformed(box_x + box_w/2, box_y + 90, q_data.q, 25, 720, 1.0, 1.0, 0);
                 
                 // If solved, show a notice
                 if (is_solved) {
                     draw_set_color(make_color_rgb(50, 220, 100));
-                    draw_text_transformed(box_x + box_w/2, box_y + 160, "✓ THƯ MẬT ĐÃ GIẢI MÃ THÀNH CÔNG - NHẬN ĐƯỢC " + string(quiz_reward_value) + " VÀNG", 0.8, 0.8, 0);
+                    draw_text_transformed(box_x + box_w/2, box_y + 160, "✓ THƯ MẬT ĐÃ GIẢI MÃ THÀNH CÔNG - NHẬN ĐƯỢC " + string(quiz_reward_value) + " VÀNG", 1.0, 1.0, 0);
                 } else {
                     draw_set_color(c_orange);
-                    draw_text_transformed(box_x + box_w/2, box_y + 160, "HÃY CHỌN PHƯƠNG ÁN ĐÚNG ĐỂ GIẢI MÃ MẬT LỆNH", 0.75, 0.75, 0);
+                    draw_text_transformed(box_x + box_w/2, box_y + 160, "HÃY CHỌN PHƯƠNG ÁN ĐÚNG ĐỂ GIẢI MÃ MẬT LỆNH", 1.0, 1.0, 0);
                 }
                 
                 // 4 options in 2x2 grid
@@ -585,7 +585,7 @@ if (won) {
                     draw_set_color(c_white);
                     draw_set_halign(fa_center);
                     draw_set_valign(fa_middle);
-                    draw_text_ext_transformed(opt_x + opt_w/2, opt_y + opt_h/2, q_data.a[i], 18, 320, 0.72, 0.72, 0);
+                    draw_text_ext_transformed(opt_x + opt_w/2, opt_y + opt_h/2, q_data.a[i], 18, 320, 1.0, 1.0, 0);
                     
                     if (hover && mouse_pressed && !is_solved) {
                         if (i == q_data.correct) {
@@ -617,7 +617,7 @@ if (won) {
                 
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
-                draw_text_transformed(back_x + back_w/2, back_y + back_h/2, "QUAY LẠI", 0.8, 0.8, 0);
+                draw_text_transformed(back_x + back_w/2, back_y + back_h/2, "QUAY LẠI", 1.0, 1.0, 0);
                 
                 if (back_hover && mouse_pressed) {
                     audio_play_sound(sndClickBut, 10, 0);

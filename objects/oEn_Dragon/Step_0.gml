@@ -13,6 +13,7 @@ if CurHp <= 0 {
 
 if instance_exists(oPar_PlayerUnit) {
 	NearestEnemy = instance_nearest(x, y, oPar_PlayerUnit);
+	if (NearestEnemy == noone) exit;
 }
 else {
 	exit;

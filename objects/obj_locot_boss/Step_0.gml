@@ -5,13 +5,67 @@ CanAttack = 0;
 
 // 1. Logic Phan Văn Giót
 if (CurHp <= 180 && !PhanVanGiotTriggered && CurHp > 0) {
-    PhanVanGiotTriggered = true;
+    if (VideoState == 0 && !VideoFinished) {
+        VideoState = 1; // Start fade out
+        // Pause all units
+        instance_deactivate_object(oPar_PlayerUnit);
+        instance_deactivate_object(oPar_Enemy);
+        VideoPausedEntities = true;
+        
+        // Mute/Fade out music (1500ms = 1.5s)
+        audio_sound_gain(bgmGameRoom, 0, 1500);
+    }
+}
+
+// State Machine cho Video
+if (VideoState > 0) {
+    if (VideoState == 1) {
+        // Fading out
+        VideoAlpha += 0.02;
+        if (VideoAlpha >= 1) {
+            VideoAlpha = 1;
+            VideoState = 2; // Play video
+            VideoPlaying = true;
+            video_open("0531.mp4");
+        }
+    } 
+    else if (VideoState == 2 && VideoPlaying) {
+        var pos = video_get_position();
+        var dur = video_get_duration();
+        if (video_get_status() == video_status_closed || (pos > 0 && dur > 0 && pos >= dur - 100)) {
+            video_close();
+            VideoPlaying = false;
+            VideoState = 3; // Fade in
+            // Unmute/Fade in music
+            audio_sound_gain(bgmGameRoom, 1, 1500);
+        }
+    }
+    else if (VideoState == 3) {
+        // Fading in
+        VideoAlpha -= 0.02;
+        if (VideoAlpha <= 0) {
+            VideoAlpha = 0;
+            VideoState = 0; // Finished
+            VideoFinished = true;
+            
+            // Khôi phục lại các units đã bị đóng băng
+            if (VideoPausedEntities) {
+                instance_activate_object(oPar_PlayerUnit);
+                instance_activate_object(oPar_Enemy);
+                VideoPausedEntities = false;
+            }
+            
+            // Sinh ra Phan Văn Giót
+            PhanVanGiotTriggered = true;
+            var Giot = instance_create_layer(x + (sprite_width/2), y + sprite_height + 50, "Instances", obj_phan_van_giot);
+            Giot.TargetBoss = id;
+            Giot.DestX = x + (sprite_width/2);
+            Giot.DestY = y + (sprite_height/2);
+        }
+    }
     
-    // Sinh ra Phan Văn Giót chạy từ dưới lên lấp lỗ châu mai
-    var Giot = instance_create_layer(x + (sprite_width/2), y + sprite_height + 50, "Instances", obj_phan_van_giot);
-    Giot.TargetBoss = id;
-    Giot.DestX = x + (sprite_width/2);
-    Giot.DestY = y + (sprite_height/2);
+    // Ngừng chạy logic của Boss trong lúc chuyển cảnh / chiếu video
+    exit;
 }
 
 // Thực thi logic của Parent (xử lý chết, HP)

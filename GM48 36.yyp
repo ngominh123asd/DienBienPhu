@@ -31,8 +31,11 @@
     {"$GMFolder":"","%Name":"Player Sprites","folderPath":"folders/Sprites/Player Sprites.yy","name":"Player Sprites","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Tile Sets","folderPath":"folders/Tile Sets.yy","name":"Tile Sets","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
-  "ForcedPrefabProjectReferences":[],
+  "ForcedPrefabProjectReferences":[
+    {"link":"io.gamemaker.sdfshaders-1.0.0","name":"io.gamemaker.sdfshaders-1.0.0","path":"io.gamemaker.sdfshaders-1.0.0.yyp",},
+  ],
   "IncludedFiles":[
+    {"$GMIncludedFile":"","%Name":"0531.mp4","CopyToMask":-1,"filePath":"datafiles","name":"0531.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Font.ttf","CopyToMask":-1,"filePath":"datafiles","name":"Font.ttf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"part_01.png","CopyToMask":-1,"filePath":"datafiles","name":"part_01.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"part_02.png","CopyToMask":-1,"filePath":"datafiles","name":"part_02.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
@@ -63,6 +66,7 @@
     {"id":{"name":"obj_lazer","path":"objects/obj_lazer/obj_lazer.yy",},},
     {"id":{"name":"obj_locot_boss","path":"objects/obj_locot_boss/obj_locot_boss.yy",},},
     {"id":{"name":"obj_locot_player","path":"objects/obj_locot_player/obj_locot_player.yy",},},
+    {"id":{"name":"obj_map_zone","path":"objects/obj_map_zone/obj_map_zone.yy",},},
     {"id":{"name":"obj_missile_ke_dich","path":"objects/obj_missile_ke_dich/obj_missile_ke_dich.yy",},},
     {"id":{"name":"obj_phan_van_giot","path":"objects/obj_phan_van_giot/obj_phan_van_giot.yy",},},
     {"id":{"name":"obj_phi_thuyen_rocket","path":"objects/obj_phi_thuyen_rocket/obj_phi_thuyen_rocket.yy",},},

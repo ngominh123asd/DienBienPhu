@@ -1,5 +1,36 @@
 /// @description Draw HP manually to bypass cache bug
 
+// --- VIDEO DRAWING & FADE ---
+if (variable_instance_exists(id, "VideoState") && VideoState > 0) {
+    // Draw fade to black
+    if (VideoAlpha > 0) {
+        draw_set_alpha(VideoAlpha);
+        draw_set_color(c_black);
+        draw_rectangle(0, 0, 1280, 720, false);
+        draw_set_alpha(1.0);
+        draw_set_color(c_white);
+    }
+    
+    // Draw Video if playing
+    if (VideoPlaying) {
+        var _video_data = video_draw();
+        var _video_status = _video_data[0];
+        
+        // 0 means video surface is ready
+        if (_video_status == 0) {
+            var _video_surf = _video_data[1];
+            if (surface_exists(_video_surf)) {
+                draw_surface_stretched(_video_surf, 0, 0, 1280, 720);
+            }
+        }
+    }
+}
+// ----------------------
+// Hide HP bar and other GUI elements while video is active
+if (variable_instance_exists(id, "VideoState") && VideoState > 0) {
+    exit;
+}
+// ----------------------
 
 if (CurHp <= 0) exit;
 if (!instance_exists(oCamera)) exit;

@@ -1,5 +1,24 @@
 /// @description Mass select units
 
+if (!loc_zones_initialized) {
+    loc_zones_initialized = true;
+    loc_zones = [];
+    loc_zone_visited = [];
+    with (obj_map_zone) {
+        array_push(other.loc_zones, {
+            x1: bbox_left,
+            y1: bbox_top,
+            x2: bbox_right,
+            y2: bbox_bottom,
+            name: zone_name,
+            short_name: short_name,
+            story: story_text
+        });
+        array_push(other.loc_zone_visited, false);
+    }
+}
+
+
 if instance_exists(oEn_Dragon){
 	TimePlayed ++;
 }
@@ -773,8 +792,14 @@ if irandom(1) = 1{
 
 #region Game Over
 
-if !instance_exists(oPar_PlayerUnit){
-	
-	instance_create_layer(x,y,"Sensors",oTutText_GameOver);	
+var is_video_playing = false;
+if (instance_exists(obj_locot_boss) && variable_instance_exists(obj_locot_boss, "VideoState") && obj_locot_boss.VideoState > 0) {
+	is_video_playing = true;
+}
+
+if (!instance_exists(oPar_PlayerUnit) && !is_video_playing) {
+	if (!instance_exists(oTutText_GameOver)) {
+		instance_create_layer(x,y,"Sensors",oTutText_GameOver);	
+	}
 }
 #endregion

@@ -35,4 +35,9 @@ alarm[2] = -1; // Vô hiệu hóa báo thức sinh lính của parent
 // Đổi kích thước Boss cho vừa vặn hơn với map
 image_xscale = 0.08; 
 image_yscale = 0.08;
-
+// Video Event State
+VideoState = 0; // 0: None, 1: Fade out, 2: Play, 3: Fade in
+VideoAlpha = 0;
+VideoPausedEntities = false;
+VideoPlaying = false;
+VideoFinished = false;

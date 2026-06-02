@@ -15,6 +15,7 @@ if instance_exists(oPar_PlayerUnit) {
 	
 	//Get nearest enemy
 	NearestEnemy = instance_nearest(x, y, oPar_PlayerUnit);
+	if (NearestEnemy == noone) exit;
 	
 	//Set target
 	if distance_to_object(NearestEnemy) < 24 {

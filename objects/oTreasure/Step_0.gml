@@ -4,7 +4,7 @@ RClick = mouse_check_button_pressed(mb_right);
 NearPlayer = instance_nearest(x,y,oPar_PlayerUnit);
 
 if image_index = 0 && RClick && position_meeting(mouse_x,mouse_y,self) && 
-distance_to_object(NearPlayer) < 5{
+NearPlayer != noone && distance_to_object(NearPlayer) < 5{
 	
 	image_index = 1; //Open
 	audio_play_sound(sndGetTreasure,10,0);

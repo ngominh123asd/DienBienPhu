@@ -70,7 +70,7 @@ if instance_exists(oPar_PlayerUnit) {
 	NearestEnemy = instance_nearest(x, y, oPar_PlayerUnit);
 	
 	// Tấn công khi trong tầm bắn (đo chính xác bằng điểm giữa thay vì bounding box)
-	if point_distance(x, y, NearestEnemy.x, NearestEnemy.y) <= 60 {
+	if (NearestEnemy != noone && point_distance(x, y, NearestEnemy.x, NearestEnemy.y) <= 60) {
 		
 		if CanAttack {
 			

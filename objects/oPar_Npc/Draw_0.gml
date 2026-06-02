@@ -2,7 +2,7 @@
 
 var NearPlayer = instance_nearest(x,y,oPar_PlayerUnit);
 
-if distance_to_object(NearPlayer) < 5{
+if (NearPlayer != noone && distance_to_object(NearPlayer) < 5) {
 
 	var zoom = 1;
 	if instance_exists(oCamera) zoom = oCamera.ZoomFactor;

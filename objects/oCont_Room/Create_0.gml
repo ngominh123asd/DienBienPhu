@@ -157,24 +157,9 @@ for (var i = 0; i < 80; i++) {
 }
 
 // ================= LOCATION ZONE SYSTEM =================
-// Defines map zones with bounds, names, and story text
-loc_zones = [
-    {
-        x1: 30, y1: 60, x2: 280, y2: 480,
-        name: "CỤM CỨ ĐIỂM HIM LAM",
-        story: "Ngày 13/03/1954, quân ta nổ súng mở màn chiến dịch. Trung đoàn 141 và 209 đồng loạt tấn công cứ điểm Him Lam. Anh hùng Phan Đình Giót đã lấy thân mình lấp lỗ châu mai, mở đường cho đồng đội xông lên tiêu diệt cứ điểm."
-    },
-    {
-        x1: 400, y1: 300, x2: 850, y2: 600,
-        name: "SÂN BAY MƯỜNG THANH",
-        story: "Sân bay Mường Thanh là huyết mạch tiếp tế duy nhất của quân Pháp tại Điện Biên Phủ. Quân ta đào hào vây lấn, pháo binh bắn phá liên tục khiến sân bay tê liệt hoàn toàn, cắt đứt đường tiếp viện của địch."
-    },
-    {
-        x1: 700, y1: 60, x2: 1100, y2: 250,
-        name: "TẬP ĐOÀN CỨ ĐIỂM",
-        story: "Tập đoàn cứ điểm Điện Biên Phủ gồm 49 cứ điểm liên hoàn, chia thành 8 cụm, do tướng De Castries chỉ huy với hơn 16.000 quân. Thực dân Pháp coi đây là \"pháo đài bất khả xâm phạm\" ở Đông Dương."
-    }
-];
+// Zones will be populated dynamically from obj_map_zone instances in Step_0
+loc_zones = [];
+loc_zones_initialized = false;
 
 // Zone popup animation state
 loc_zone_current = -1;     // Index of current zone (-1 = none)
