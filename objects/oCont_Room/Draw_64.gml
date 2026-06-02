@@ -130,6 +130,47 @@ if (!(debuff_active && debuff_type == "radar_jam")) {
 		draw_set_alpha(0.08);
 		draw_rectangle(cv_x1, cv_y1, cv_x2, cv_y2, false);
 	}
+	
+	// 5.5. Draw Location Names on Minimap
+	draw_set_font(fnt_vietnamese);
+	draw_set_halign(fa_center);
+	draw_set_valign(fa_middle);
+	
+	// Location data: [room_x, room_y, label]
+	// 1) Cụm cứ điểm Him Lam - cluster of bunkers in upper-left area (~x:130, y:260)
+	// 2) Sân bay Mường Thanh - airstrip in center area (~x:550, y:400)
+	// 3) Tập đoàn cứ điểm - dense bunker complex on the right (~x:780, y:140)
+	var loc_names = [
+		[130, 260, "Him Lam"],
+		[550, 400, "SB M.Thanh"],
+		[780, 140, "TĐ Cứ Điểm"]
+	];
+	
+	for (var i = 0; i < array_length(loc_names); i++) {
+		var lbl_rx = loc_names[i][0]; // room x
+		var lbl_ry = loc_names[i][1]; // room y
+		var lbl_text = loc_names[i][2];
+		
+		// Convert room coords to minimap coords
+		var lbl_mx = map_x + (lbl_rx / room_width) * minimap_w;
+		var lbl_my = map_y + (lbl_ry / room_height) * minimap_h;
+		
+		// Clamp label inside minimap bounds with small margin
+		lbl_mx = clamp(lbl_mx, map_x + 15, map_x + minimap_w - 15);
+		lbl_my = clamp(lbl_my, map_y + 5, map_y + minimap_h - 5);
+		
+		// Draw dark pill background for readability
+		var tw = string_width(lbl_text) * 0.45 + 4;
+		var th = string_height(lbl_text) * 0.45 + 2;
+		draw_set_color(c_black);
+		draw_set_alpha(0.55);
+		draw_rectangle(lbl_mx - tw/2, lbl_my - th/2, lbl_mx + tw/2, lbl_my + th/2, false);
+		
+		// Draw label text
+		draw_set_alpha(0.9);
+		draw_set_color(make_color_rgb(255, 230, 150)); // Warm gold color
+		draw_text_transformed(lbl_mx, lbl_my, lbl_text, 0.45, 0.45, 0);
+	}
 } else {
 	// Draw radar jam warning inside minimap box
 	draw_set_color(c_black);
