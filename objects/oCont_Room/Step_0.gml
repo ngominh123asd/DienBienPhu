@@ -288,6 +288,59 @@ if (mouse_over_minimap) {
 }
 #endregion
 
+#region Location Zone Detection
+// Check camera center against zone boundaries
+if (instance_exists(oCamera)) {
+	var cam_cx = oCamera.x;
+	var cam_cy = oCamera.y;
+	
+	var new_zone = -1;
+	for (var i = 0; i < array_length(loc_zones); i++) {
+		var z = loc_zones[i];
+		if (cam_cx >= z.x1 && cam_cx <= z.x2 && cam_cy >= z.y1 && cam_cy <= z.y2) {
+			new_zone = i;
+			break;
+		}
+	}
+	
+	// Detect zone transition
+	if (new_zone != loc_zone_current) {
+		loc_zone_prev = loc_zone_current;
+		loc_zone_current = new_zone;
+		
+		if (new_zone != -1) {
+			loc_zone_alpha = 0;
+			loc_zone_timer = 0;
+			loc_zone_visited[new_zone] = true;
+		}
+	}
+	
+	// Animate popup
+	if (loc_zone_current != -1) {
+		loc_zone_timer++;
+		
+		// Fade in (first 30 frames)
+		if (loc_zone_timer <= 30) {
+			loc_zone_alpha = loc_zone_timer / 30;
+		}
+		// Hold
+		else if (loc_zone_timer < loc_zone_show_duration - 60) {
+			loc_zone_alpha = 1.0;
+		}
+		// Fade out (last 60 frames)
+		else if (loc_zone_timer < loc_zone_show_duration) {
+			loc_zone_alpha = (loc_zone_show_duration - loc_zone_timer) / 60;
+		}
+		else {
+			loc_zone_alpha = 0;
+		}
+	} else {
+		// Quick fade out when leaving zone
+		loc_zone_alpha = max(0, loc_zone_alpha - 0.03);
+	}
+}
+#endregion
+
 #region Clicking units
 
 // Decrement shake and cooldowns

@@ -31,6 +31,18 @@ draw_set_halign(fa_right);
 draw_set_color(c_yellow);
 draw_text(1275,10,"Press 'BACKSPACE' to Quit");
 draw_set_halign(fa_left);
+
+// Draw current zone name above Time
+if (loc_zone_current != -1) {
+	var zone_display_name = loc_zones[loc_zone_current].name;
+	draw_set_color(make_color_rgb(255, 220, 80));
+	draw_text(5, 685, "Khu vuc: " + zone_display_name);
+} else {
+	draw_set_color(make_color_rgb(150, 150, 150));
+	draw_text(5, 685, "Ngoai khu vuc chien su");
+}
+
+draw_set_color(c_yellow);
 draw_text(5,700,"Time: " + string(PlayedString));
 
 #region Draw Minimap
@@ -108,8 +120,8 @@ if (!(debuff_active && debuff_type == "radar_jam")) {
 	
 	// 5. Draw Viewport Camera Box (White transparent rect showing where the camera is looking)
 	if (instance_exists(oCamera)) {
-		var cam_w = camera_get_view_width(oCamera.Camera);
-		var cam_h = camera_get_view_height(oCamera.Camera);
+		var cam_w = oCamera.CamInitW * oCamera.ZoomFactor;
+		var cam_h = oCamera.CamInitH * oCamera.ZoomFactor;
 		var cam_x = oCamera.x - cam_w / 2;
 		var cam_y = oCamera.y - cam_h / 2;
 		
@@ -124,11 +136,12 @@ if (!(debuff_active && debuff_type == "radar_jam")) {
 		cv_x2 = clamp(cv_x2, map_x, map_x + minimap_w);
 		cv_y2 = clamp(cv_y2, map_y, map_y + minimap_h);
 		
+		// Camera viewport border (white, clearly visible)
 		draw_set_color(c_white);
-		draw_set_alpha(0.35);
+		draw_set_alpha(1.0);
 		draw_rectangle(cv_x1, cv_y1, cv_x2, cv_y2, true);
-		draw_set_alpha(0.08);
-		draw_rectangle(cv_x1, cv_y1, cv_x2, cv_y2, false);
+		draw_set_alpha(0.5);
+		draw_rectangle(cv_x1 - 1, cv_y1 - 1, cv_x2 + 1, cv_y2 + 1, true);
 	}
 	
 	// 5.5. Draw Location Names on Minimap
@@ -136,40 +149,73 @@ if (!(debuff_active && debuff_type == "radar_jam")) {
 	draw_set_halign(fa_center);
 	draw_set_valign(fa_middle);
 	
-	// Location data: [room_x, room_y, label]
-	// 1) Cụm cứ điểm Him Lam - cluster of bunkers in upper-left area (~x:130, y:260)
-	// 2) Sân bay Mường Thanh - airstrip in center area (~x:550, y:400)
-	// 3) Tập đoàn cứ điểm - dense bunker complex on the right (~x:780, y:140)
-	var loc_names = [
-		[130, 260, "Him Lam"],
-		[550, 400, "SB M.Thanh"],
-		[780, 140, "TĐ Cứ Điểm"]
-	];
-	
-	for (var i = 0; i < array_length(loc_names); i++) {
-		var lbl_rx = loc_names[i][0]; // room x
-		var lbl_ry = loc_names[i][1]; // room y
-		var lbl_text = loc_names[i][2];
+	// Location labels on minimap using zone data
+	for (var i = 0; i < array_length(loc_zones); i++) {
+		var z = loc_zones[i];
+		var lbl_rx = (z.x1 + z.x2) / 2; // Center of zone
+		var lbl_ry = z.y1 - 15; // Above the zone
+		
+		// Short display names for minimap
+		var lbl_text = "";
+		if (i == 0) lbl_text = "Him Lam";
+		else if (i == 1) lbl_text = "SB M.Thanh";
+		else if (i == 2) lbl_text = "TĐ Cứ Điểm";
 		
 		// Convert room coords to minimap coords
 		var lbl_mx = map_x + (lbl_rx / room_width) * minimap_w;
 		var lbl_my = map_y + (lbl_ry / room_height) * minimap_h;
 		
-		// Clamp label inside minimap bounds with small margin
-		lbl_mx = clamp(lbl_mx, map_x + 15, map_x + minimap_w - 15);
-		lbl_my = clamp(lbl_my, map_y + 5, map_y + minimap_h - 5);
+		// Clamp label inside minimap bounds with generous margin
+		lbl_mx = clamp(lbl_mx, map_x + 25, map_x + minimap_w - 25);
+		lbl_my = clamp(lbl_my, map_y + 8, map_y + minimap_h - 8);
 		
-		// Draw dark pill background for readability
-		var tw = string_width(lbl_text) * 0.45 + 4;
-		var th = string_height(lbl_text) * 0.45 + 2;
+		// Highlight current zone
+		var is_current = (loc_zone_current == i);
+		
+		// Draw solid dark background pill for maximum readability
+		var tw = string_width(lbl_text) + 8;
+		var th = string_height(lbl_text) + 4;
 		draw_set_color(c_black);
-		draw_set_alpha(0.55);
+		draw_set_alpha(0.85);
 		draw_rectangle(lbl_mx - tw/2, lbl_my - th/2, lbl_mx + tw/2, lbl_my + th/2, false);
 		
-		// Draw label text
-		draw_set_alpha(0.9);
-		draw_set_color(make_color_rgb(255, 230, 150)); // Warm gold color
-		draw_text_transformed(lbl_mx, lbl_my, lbl_text, 0.45, 0.45, 0);
+		// Draw colored border around pill
+		if (is_current) {
+			draw_set_color(c_yellow);
+			draw_set_alpha(0.8);
+		} else {
+			draw_set_color(make_color_rgb(180, 150, 50));
+			draw_set_alpha(0.5);
+		}
+		draw_rectangle(lbl_mx - tw/2, lbl_my - th/2, lbl_mx + tw/2, lbl_my + th/2, true);
+		
+		// Draw thick text shadow (multiple offsets for bold outline effect)
+		draw_set_alpha(1.0);
+		draw_set_color(c_black);
+		draw_text(lbl_mx - 1, lbl_my, lbl_text);
+		draw_text(lbl_mx + 1, lbl_my, lbl_text);
+		draw_text(lbl_mx, lbl_my - 1, lbl_text);
+		draw_text(lbl_mx, lbl_my + 1, lbl_text);
+		
+		// Draw label text (bright white for current, gold for others)
+		draw_set_alpha(1.0);
+		if (is_current) {
+			draw_set_color(c_white);
+		} else {
+			draw_set_color(make_color_rgb(255, 230, 100));
+		}
+		draw_text(lbl_mx, lbl_my, lbl_text);
+		
+		// Draw zone boundary indicator on minimap
+		if (is_current) {
+			var zx1 = map_x + (z.x1 / room_width) * minimap_w;
+			var zy1 = map_y + (z.y1 / room_height) * minimap_h;
+			var zx2 = map_x + (z.x2 / room_width) * minimap_w;
+			var zy2 = map_y + (z.y2 / room_height) * minimap_h;
+			draw_set_color(c_yellow);
+			draw_set_alpha(0.35 + sin(current_time * 0.008) * 0.15);
+			draw_rectangle(zx1, zy1, zx2, zy2, true);
+		}
 	}
 } else {
 	// Draw radar jam warning inside minimap box
@@ -238,6 +284,90 @@ if (all_cleared) {
 }
 
 // Reset draw settings
+draw_set_alpha(1.0);
+draw_set_color(c_white);
+#endregion
+
+#region Draw Location Zone Story Popup
+// Cinematic banner when entering a historical location zone
+if (loc_zone_alpha > 0.01 && (loc_zone_current != -1 || loc_zone_prev != -1)) {
+	var zone_idx = (loc_zone_current != -1) ? loc_zone_current : loc_zone_prev;
+	
+	if (zone_idx >= 0 && zone_idx < array_length(loc_zones)) {
+		var zd = loc_zones[zone_idx];
+		var popup_alpha = loc_zone_alpha;
+		
+		// Banner dimensions and position (top center, cinematic style)
+		var ban_w = 700;
+		var ban_h = 100;
+		var ban_x = (1280 - ban_w) / 2;
+		// Slide in from top
+		var ban_y_target = 20;
+		var ban_y = ban_y_target - (1 - popup_alpha) * 40;
+		
+		// Draw dark cinematic glass background
+		draw_set_color(make_color_rgb(10, 15, 10));
+		draw_set_alpha(0.85 * popup_alpha);
+		draw_rectangle(ban_x, ban_y, ban_x + ban_w, ban_y + ban_h, false);
+		
+		// Gold top border line
+		draw_set_color(make_color_rgb(220, 180, 50));
+		draw_set_alpha(0.9 * popup_alpha);
+		draw_rectangle(ban_x, ban_y, ban_x + ban_w, ban_y + 2, false);
+		
+		// Bottom border
+		draw_set_alpha(0.5 * popup_alpha);
+		draw_rectangle(ban_x, ban_y + ban_h - 1, ban_x + ban_w, ban_y + ban_h, false);
+		
+		// Outer glow border
+		draw_set_color(make_color_rgb(180, 150, 50));
+		draw_set_alpha(0.3 * popup_alpha);
+		draw_rectangle(ban_x - 1, ban_y - 1, ban_x + ban_w + 1, ban_y + ban_h + 1, true);
+		
+		// Draw location name (large, gold, centered)
+		draw_set_font(fnt_vietnamese);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_top);
+		
+		// Star decorations around the name removed (font doesn't support them)
+		var name_text = "- " + zd.name + " -";
+		
+		// Text shadow (using 1.0 scale for crisp pixel rendering)
+		draw_set_color(c_black);
+		draw_set_alpha(0.7 * popup_alpha);
+		draw_text(ban_x + ban_w/2 + 2, ban_y + 12 + 2, name_text);
+		
+		// Main title text with pulsing gold
+		var title_pulse = 0.5 + sin(current_time * 0.006) * 0.5;
+		draw_set_color(merge_color(make_color_rgb(255, 210, 60), c_yellow, title_pulse * 0.3));
+		draw_set_alpha(popup_alpha);
+		draw_text(ban_x + ban_w/2, ban_y + 12, name_text);
+		
+		// Draw story narration text (using 1.0 scale draw_text_ext for crispness)
+		draw_set_color(make_color_rgb(220, 220, 200));
+		draw_set_alpha(0.9 * popup_alpha);
+		draw_set_valign(fa_top);
+		draw_text_ext(ban_x + ban_w/2, ban_y + 35, zd.story, 22, ban_w - 40);
+		
+		// Decorative corner markers
+		draw_set_color(make_color_rgb(220, 180, 50));
+		draw_set_alpha(0.6 * popup_alpha);
+		// Top-left corner
+		draw_line_width(ban_x, ban_y, ban_x + 15, ban_y, 2);
+		draw_line_width(ban_x, ban_y, ban_x, ban_y + 15, 2);
+		// Top-right corner
+		draw_line_width(ban_x + ban_w, ban_y, ban_x + ban_w - 15, ban_y, 2);
+		draw_line_width(ban_x + ban_w, ban_y, ban_x + ban_w, ban_y + 15, 2);
+		// Bottom-left corner
+		draw_line_width(ban_x, ban_y + ban_h, ban_x + 15, ban_y + ban_h, 2);
+		draw_line_width(ban_x, ban_y + ban_h, ban_x, ban_y + ban_h - 15, 2);
+		// Bottom-right corner
+		draw_line_width(ban_x + ban_w, ban_y + ban_h, ban_x + ban_w - 15, ban_y + ban_h, 2);
+		draw_line_width(ban_x + ban_w, ban_y + ban_h, ban_x + ban_w, ban_y + ban_h - 15, 2);
+	}
+}
+
+// Reset
 draw_set_alpha(1.0);
 draw_set_color(c_white);
 #endregion
