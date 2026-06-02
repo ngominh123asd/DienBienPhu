@@ -66,6 +66,96 @@ if (!alive) {
 }
 
 // ----------------------------------------------------
+// STATE MACHINE FOR SHOP & WITHDRAWAL
+// ----------------------------------------------------
+if (variable_instance_exists(id, "state")) {
+    if (state == "withdraw") {
+        speed = 0;
+        y -= 8; // fly off screen
+        
+        // Trail update during withdraw
+        for (var i = 5; i > 0; i--) {
+            trail_x[i] = trail_x[i-1];
+            trail_y[i] = trail_y[i-1];
+        }
+        trail_x[0] = x;
+        trail_y[0] = y;
+        
+        if (y < -80) {
+            state = "shop";
+            gold += 120; // Earn 120 gold at the end of each turn
+            wrench_purchased = false; // Reset wrench purchased state for this shop session
+            session_purchases = [0, 0, 0, 0];
+            selected_item = 0;
+            hp_before_shop = hp;
+            shield_charges_before_shop = shield_charges;
+        }
+        exit;
+    }
+    
+    if (state == "shop") {
+        speed = 0;
+        // Keep trail matching position
+        for (var i = 0; i < 6; i++) {
+            trail_x[i] = x;
+            trail_y[i] = y;
+        }
+        exit;
+    }
+    
+    if (state == "reenter") {
+        speed = 0;
+        y -= 8; // fly back onto screen
+        
+        // Trail update during reentry
+        for (var i = 5; i > 0; i--) {
+            trail_x[i] = trail_x[i-1];
+            trail_y[i] = trail_y[i-1];
+        }
+        trail_x[0] = x;
+        trail_y[0] = y;
+        
+        if (y <= 512) {
+            y = 512;
+            state = "play";
+            
+            // Start next wave countdown & dialogue!
+            wave_countdown = 300;
+            next_wave = level_wave + 1;
+            wave_dialog_index = 0;
+        }
+        exit;
+    }
+}
+
+// ----------------------------------------------------
+// ROCKET & AUTOFIRE SKILL CONTROLS
+// ----------------------------------------------------
+// Rocket cooldown decay
+if (variable_instance_exists(id, "rocket_cooldown") && rocket_cooldown > 0) {
+    rocket_cooldown -= 1;
+}
+
+// Press Q to launch homing rocket
+if (state == "play" && variable_instance_exists(id, "has_rocket") && has_rocket) {
+    if (keyboard_check_pressed(ord("Q")) && rocket_cooldown <= 0) {
+        rocket_cooldown = 120; // 2 seconds cooldown (120 frames at 60fps)
+        audio_play_sound(sndDragonfire, 8, 0); // Play launch sound
+        
+        // Spawn homing rocket from player's position
+        instance_create_depth(x, y - 20, depth - 1, obj_phi_thuyen_rocket);
+    }
+}
+
+// Press E to toggle autofire (if has_autofire is owned)
+if (state == "play" && variable_instance_exists(id, "has_autofire") && has_autofire) {
+    if (keyboard_check_pressed(ord("E"))) {
+        autofire_active = !autofire_active;
+        audio_play_sound(sndClick, 8, 0);
+    }
+}
+
+// ----------------------------------------------------
 // KAMIKAZE SACRIFICE CONTROL
 // ----------------------------------------------------
 if (variable_instance_exists(id, "kamikaze_mode") && kamikaze_mode) {
@@ -73,7 +163,6 @@ if (variable_instance_exists(id, "kamikaze_mode") && kamikaze_mode) {
     
     // 1. One-time screen cleanup of projectiles when cinematic triggers
     if (variable_instance_exists(id, "kamikaze_cleaned") && !kamikaze_cleaned) {
-        kamizer_cleaned = true; // wait, let's keep it robust
         kamikaze_cleaned = true;
         with (obj_lazer) { instance_destroy(); }
         with (obj_lazer_ke_dich) { instance_destroy(); }
@@ -224,16 +313,10 @@ if (alive && !won) {
         }
     }
     
-    // Check if we need to start a countdown to the next wave
-    if (instance_number(obj_ke_dich) == 0 && instance_number(obj_tau_san_bay) == 0 && wave_countdown == -1) {
-        if (level_wave == 1) {
-            wave_countdown = 300; // 5 seconds countdown (300 frames at 60fps)
-            next_wave = 2;
-            wave_dialog_index = 0; // Trigger interactive radio dialogue
-        } else if (level_wave == 2) {
-            wave_countdown = 300; // 5 seconds countdown (300 frames at 60fps)
-            next_wave = 3;
-            wave_dialog_index = 0; // Trigger interactive radio dialogue
+    // Check if we need to start a countdown to the next wave (Modified for Shop system)
+    if (state == "play" && instance_number(obj_ke_dich) == 0 && instance_number(obj_tau_san_bay) == 0 && wave_countdown == -1) {
+        if (level_wave == 1 || level_wave == 2) {
+            state = "withdraw";
         } else if (level_wave == 3) {
             // Victory if all waves cleared
             won = true;
@@ -242,11 +325,14 @@ if (alive && !won) {
 }
 
 // Vertical movement
-if (keyboard_check(vk_up) || keyboard_check(ord("W"))) {
-    y -= 7; // standard speed is 7 (buffed from 5)
-}
-else if (keyboard_check(vk_down) || keyboard_check(ord("S"))) {
-    y += 7; // standard speed is 7 (buffed from 5)
+if (state == "play") {
+    var spd = variable_instance_exists(id, "move_speed") ? move_speed : 7;
+    if (keyboard_check(vk_up) || keyboard_check(ord("W"))) {
+        y -= spd;
+    }
+    else if (keyboard_check(vk_down) || keyboard_check(ord("S"))) {
+        y += spd;
+    }
 }
 
 // Keep inside screen boundaries
@@ -254,13 +340,18 @@ x = clamp(x, 40, room_width - 40);
 y = clamp(y, 100, room_height - 60);
 
 // ----------------------------------------------------
-// AUTOFIRE WEAPON CONTROL (Hỗ trợ giữ phím Bắn liên tục)
+// AUTOFIRE WEAPON CONTROL
 // ----------------------------------------------------
 if (shoot_cooldown > 0) {
     shoot_cooldown -= 1;
 }
 
-if (keyboard_check(vk_space) && shoot_cooldown <= 0) {
-    shoot_cooldown = 10; // Firing rate: every 10 frames (6 rounds/sec)
-    event_perform(ev_keypress, vk_space); // programmatically trigger Space keypress event
+if (state == "play") {
+    var cd_val = variable_instance_exists(id, "shoot_cooldown_val") ? shoot_cooldown_val : 10;
+    var fire_pressed = keyboard_check(vk_space) || (variable_instance_exists(id, "autofire_active") && autofire_active);
+    
+    if (fire_pressed && shoot_cooldown <= 0) {
+        shoot_cooldown = cd_val;
+        event_perform(ev_keypress, vk_space); // programmatically trigger Space keypress event
+    }
 }

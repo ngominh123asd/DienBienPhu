@@ -7,8 +7,26 @@ if (alive) {
         exit;
     }
     
-    // Deduct HP
-    hp -= 1;
+    // Check if we have shield charges
+    if (variable_instance_exists(id, "shield_charges") && shield_charges > 0) {
+        shield_charges -= 1;
+        instance_destroy(other);
+        
+        // Play special shield deflect sound
+        audio_play_sound(sndBoop, 10, 0);
+        
+        // Trigger small temporary immunity to prevent rapid bullet depletion
+        is_immune = true;
+        alarm[1] = room_speed * 0.4;
+        exit;
+    }
+    
+    // Deduct HP (steel roll reduces damage taken to 0.5 hearts)
+    var dmg = 1;
+    if (variable_instance_exists(id, "has_steel_roll") && has_steel_roll) {
+        dmg = 0.5;
+    }
+    hp -= dmg;
     
     // Trigger screen shake
     screen_shake = 12;
