@@ -147,4 +147,20 @@ quiz_questions = [
     }
 ];
 
+// Dec 22 Storytelling state variables
+story_dialog_index = -1;
+story_char_count = 0;
+story_char_speed = 0.45;
+story_texts = [
+    "Đêm 22 tháng 12 năm 1972...\nMàn đêm Hà Nội bị xé toạc bởi tiếng gầm rú kinh hoàng của những pháo đài bay B-52. Một loạt bom rải thảm tàn khốc đã dội thẳng xuống Bệnh viện Bạch Mai - biểu tượng của sự sống và y đức Việt Nam...",
+    "Gạch đá sụp đổ, bụi khói mù mịt chôn vùi những người thầy thuốc quả cảm cùng các bệnh nhân vô tội dưới đống đổ nát. Tiếng còi cứu thương gào rú, tiếng khóc nghẹn ngào hòa lẫn vào ngọn lửa rực trời, gây chấn động toàn dư luận quốc tế...",
+    "Thế nhưng... bom đạn kẻ thù chỉ có thể tàn phá gạch đá, chứ không bao giờ khuất phục được ý chí sắt đá của quân và dân ta! Trong đau thương và phẫn nộ, lòng yêu nước và ý chí chiến đấu quyết tử càng bùng cháy mãnh liệt hơn bao giờ hết!",
+    "Để đòi lại món nợ máu xương này, để bảo vệ bầu trời tự do của Tổ quốc và đồng bào thân yêu...\nPhi thuyền của chúng ta mang theo hy vọng và lòng quả cảm phi thường, sẵn sàng cất cánh tiến vào trận quyết chiến lịch sử!"
+];
+
+// Video frame count variable (used to check for playback loading fallback)
+video_frame_count = 0;
+video_started = false;
+
+
 

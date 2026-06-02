@@ -37,6 +37,7 @@
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"0531.mp4","CopyToMask":-1,"filePath":"datafiles","name":"0531.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Font.ttf","CopyToMask":-1,"filePath":"datafiles","name":"Font.ttf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"hoang.mp4","CopyToMask":-1,"filePath":"datafiles","name":"hoang.mp4","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"part_01.png","CopyToMask":-1,"filePath":"datafiles","name":"part_01.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"part_02.png","CopyToMask":-1,"filePath":"datafiles","name":"part_02.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"part_03.png","CopyToMask":-1,"filePath":"datafiles","name":"part_03.png","resourceType":"GMIncludedFile","resourceVersion":"2.0",},

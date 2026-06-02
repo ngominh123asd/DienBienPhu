@@ -103,6 +103,106 @@ if (variable_instance_exists(id, "state")) {
         exit;
     }
     
+    if (state == "story") {
+        speed = 0;
+        // Keep trail matching position
+        for (var i = 0; i < 6; i++) {
+            trail_x[i] = x;
+            trail_y[i] = y;
+        }
+        
+        var current_text = story_texts[story_dialog_index];
+        var text_len = string_length(current_text);
+        
+        // Typewriter effect ticker
+        if (story_char_count < text_len) {
+            var prev_char_count = story_char_count;
+            story_char_count += story_char_speed;
+            if (story_char_count > text_len) story_char_count = text_len;
+            
+            // Radio typing sound every few characters
+            if (floor(story_char_count) != floor(prev_char_count) && floor(story_char_count) % 3 == 0) {
+                var snd = audio_play_sound(sndClick, 1, 0);
+                audio_sound_pitch(snd, random_range(0.8, 1.15));
+                audio_sound_gain(snd, 0.25, 0);
+            }
+        }
+        
+        var press_space = keyboard_check_pressed(vk_space);
+        var press_enter = keyboard_check_pressed(vk_enter);
+        
+        if (press_space || press_enter) {
+            if (story_char_count < text_len) {
+                // Skip the typewriter and show entire page immediately
+                story_char_count = text_len;
+                audio_play_sound(sndClickBut, 3, 0);
+            } else {
+                if (story_dialog_index < array_length(story_texts) - 1) {
+                    // Advance to next page of the story
+                    story_dialog_index += 1;
+                    story_char_count = 0;
+                    audio_play_sound(sndBoop, 5, 0);
+                } else {
+                    // End storytelling, start video
+                    state = "video";
+                    video_frame_count = 0;
+                    video_started = false;
+                    audio_pause_all();
+                    
+                    var video_path = "hoang.mp4";
+                    if (file_exists(working_directory + "hoang.mp4")) {
+                        video_path = working_directory + "hoang.mp4";
+                    }
+                    video_open(video_path);
+                }
+            }
+        }
+        exit;
+    }
+    
+    if (state == "video") {
+        speed = 0;
+        // Keep trail matching position
+        for (var i = 0; i < 6; i++) {
+            trail_x[i] = x;
+            trail_y[i] = y;
+        }
+        
+        var status = video_get_status();
+        var skip_pressed = keyboard_check_pressed(vk_space) || keyboard_check_pressed(vk_enter);
+        
+        // Update started state once playback actually starts (status 0 = playing)
+        if (status == 0) {
+            video_started = true;
+        }
+        
+        // Check if video has ended
+        var duration = video_get_duration();
+        var pos = video_get_position();
+        
+        var is_finished = false;
+        if (video_started) {
+            if (status == 2) is_finished = true;
+            if (status == 1 && pos >= duration - 200 && duration > 0) is_finished = true;
+        }
+        
+        video_frame_count++;
+        
+        // Fallback: if video fails to open or get started after 300 frames (5 seconds)
+        if (video_frame_count > 300 && !video_started) {
+            is_finished = true;
+        }
+        
+        if (is_finished || skip_pressed) {
+            video_close();
+            audio_resume_all();
+            state = "reenter";
+            x = room_width / 2;
+            y = room_height + 100;
+        }
+        exit;
+    }
+    
     if (state == "reenter") {
         speed = 0;
         y -= 8; // fly back onto screen

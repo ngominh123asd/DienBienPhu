@@ -365,10 +365,17 @@ if (won) {
             if (is_cont_hover && mouse_pressed && !quiz_open) {
                 audio_play_sound(sndClickBut, 10, 0);
                 
-                // Exit shop, enter reentry state
-                state = "reenter";
-                x = room_width / 2;
-                y = room_height + 100;
+                // Play storytelling narrative and video if this is Turn 1 of Level 2
+                if (room == rmGame2 && level_wave == 1) {
+                    state = "story";
+                    story_dialog_index = 0;
+                    story_char_count = 0;
+                } else {
+                    // Exit shop, enter reentry state normally
+                    state = "reenter";
+                    x = room_width / 2;
+                    y = room_height + 100;
+                }
             }
         }
         
@@ -625,6 +632,131 @@ if (won) {
                 }
             }
         }
+        
+    } else if (state == "story") {
+        // --- DRAW STORYTELLING CINEMATIC ---
+        // 1. Dark overlay background with a subtle red glowing pulse representing fire/bombs
+        var pulse_red = 15 + sin(current_time * 0.003) * 10;
+        draw_set_color(make_color_rgb(pulse_red, 0, 0));
+        draw_set_alpha(1.0);
+        draw_rectangle(0, 0, 1280, 720, false);
+        
+        // 2. Cinematic top & bottom black bars
+        draw_set_color(c_black);
+        draw_rectangle(0, 0, 1280, 110, false);
+        draw_rectangle(0, 610, 1280, 720, false);
+        
+        // separating border lines
+        draw_set_color(make_color_rgb(180, 20, 20)); // crimson red
+        draw_line_width(0, 110, 1280, 110, 3);
+        draw_line_width(0, 610, 1280, 610, 3);
+        
+        // 3. Draw Title at top
+        draw_set_font(fnt_vietnamese);
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        
+        var pulse = 1.0 + sin(current_time * 0.008) * 0.02;
+        draw_set_color(c_black);
+        draw_text_ext_transformed(640 + 2, 55 + 2, "★ ĐÊM 22/12: KÝ ỨC ĐAU THƯƠNG & Ý CHÍ SẮT ĐÁ ★", 24, 1100, 1.4 * pulse, 1.4 * pulse, 0);
+        draw_set_color(make_color_rgb(255, 60, 60)); // Glowing red
+        draw_text_ext_transformed(640, 55, "★ ĐÊM 22/12: KÝ ỨC ĐAU THƯƠNG & Ý CHÍ SẮT ĐÁ ★", 24, 1100, 1.4 * pulse, 1.4 * pulse, 0);
+        
+        // 4. Draw Narrative Dialogue Box in the center/bottom
+        var box_x1 = 120;
+        var box_y1 = 200;
+        var box_x2 = 1160;
+        var box_y2 = 560;
+        
+        // Box background
+        draw_set_color(make_color_rgb(12, 10, 10));
+        draw_set_alpha(0.85);
+        draw_rectangle(box_x1, box_y1, box_x2, box_y2, false);
+        
+        // Border
+        draw_set_alpha(1.0);
+        draw_set_color(make_color_rgb(160, 30, 30));
+        draw_rectangle(box_x1, box_y1, box_x2, box_y2, true);
+        draw_set_color(make_color_rgb(220, 190, 80)); // Gold inner border
+        draw_rectangle(box_x1 + 2, box_y1 + 2, box_x2 - 2, box_y2 - 2, true);
+        
+        // 5. Draw narrative typewriter text
+        var draw_str = string_copy(story_texts[story_dialog_index], 1, floor(story_char_count));
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        
+        // Shadow
+        draw_set_color(c_black);
+        draw_text_ext(box_x1 + 40 + 2, box_y1 + 40 + 2, draw_str, 28, 960);
+        // Main text
+        draw_set_color(make_color_rgb(245, 240, 220)); // Soft retro white
+        draw_text_ext(box_x1 + 40, box_y1 + 40, draw_str, 28, 960);
+        
+        // 6. Interaction prompt
+        var blink = (floor(current_time / 250) % 2 == 0);
+        draw_set_halign(fa_right);
+        draw_set_valign(fa_bottom);
+        
+        var current_text = story_texts[story_dialog_index];
+        var text_len = string_length(current_text);
+        
+        if (story_char_count < text_len) {
+            if (blink) {
+                draw_set_color(c_gray);
+                draw_text(box_x2 - 40, box_y2 - 20, "Ấn SPACE để xem nhanh >>");
+            }
+        } else {
+            if (blink) {
+                draw_set_color(c_yellow);
+                if (story_dialog_index < array_length(story_texts) - 1) {
+                    draw_text(box_x2 - 40, box_y2 - 20, "Ấn SPACE hoặc ENTER để tiếp tục ->");
+                } else {
+                    draw_text(box_x2 - 40, box_y2 - 20, "Ấn SPACE hoặc ENTER để XUẤT KÍCH [BẮT ĐẦU PHÁT VIDEO] ->");
+                }
+            }
+        }
+        
+        // Reset settings
+        draw_set_alpha(1.0);
+        draw_set_color(c_white);
+        draw_set_valign(fa_top);
+        draw_set_halign(fa_left);
+        
+    } else if (state == "video") {
+        // --- DRAW VIDEO ---
+        // Semi-transparent or black background overlay to hide normal gameplay
+        draw_set_color(c_black);
+        draw_set_alpha(1.0);
+        draw_rectangle(0, 0, 1280, 720, false);
+        
+        var results = video_draw();
+        var status = results[0];
+        if (status == 0) {
+            // Draw video surface stretched to cover GUI size 1280x720
+            draw_surface_stretched(results[1], 0, 0, 1280, 720);
+        }
+        
+        // Small debug info at top-left
+        draw_set_color(c_white);
+        draw_set_font(fnt_vietnamese);
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        draw_text_transformed(20, 20, "Status: " + string(status) + " | Started: " + string(video_started) + " | Frame: " + string(video_frame_count), 0.65, 0.65, 0);
+        
+        // Draw a skip prompt at the bottom right corner
+        draw_set_alpha(0.65);
+        draw_set_font(fnt_vietnamese);
+        draw_set_halign(fa_right);
+        draw_set_valign(fa_bottom);
+        draw_set_color(c_white);
+        
+        var blink = (floor(current_time / 500) % 2 == 0);
+        if (blink) {
+            draw_text_transformed(1250, 700, "Nhấn Space hoặc Enter để bỏ qua >>", 0.75, 0.75, 0);
+        } else {
+            draw_text_transformed(1250, 700, "Nhấn Space hoặc Enter để bỏ qua >>", 0.75, 0.75, 0);
+        }
+        draw_set_alpha(1.0);
         
     } else {
         // --- DRAW REGULAR GAMEPLAY UI ---
